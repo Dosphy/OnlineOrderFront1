@@ -42,7 +42,7 @@ export default defineComponent({
   justify-content: center;
   align-items: center;
   height: 100vh; /* 占满整个视口高度 */
-  background-image: url('D:\domproject\online_1\beijing.jpg');
+  background-image: url('beijing.jpg');
   background-size: cover; /* 背景图片覆盖整个容器 */
   background-position: center; /* 背景图片居中 */
   background-repeat: no-repeat; /* 背景图片不重复 */
