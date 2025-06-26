@@ -48,7 +48,7 @@ export default defineComponent({
 .register-form {
   max-width: 300px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 50px;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
@@ -58,7 +58,7 @@ export default defineComponent({
 }
 
 label {
-  display: block;
+  display: white;
   margin-bottom: 5px;
 }
 

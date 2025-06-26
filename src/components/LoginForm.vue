@@ -41,7 +41,7 @@ export default defineComponent({
 
 <style scoped>
 .login-container {
-  max-width: 300px;
+  max-width: 600px;
   margin: 0 auto;
   padding: 20px;
   border: 1px solid #ccc;
