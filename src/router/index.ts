@@ -1,20 +1,20 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import LoginView from '../Views/LoginView.vue';
-import RegisterView from '../Views/RegisterView.vue';
+import RegisterForm from '@/components/RegisterForm.vue';
 import UserProfile from '../components/UserProfile.vue';
 import UserInfoEdit from '../components/UserInfoEdit.vue';
 import UserOrderList from '../components/UserOrderList.vue';
 import StockManagement from '../components/StockManagement.vue'; 
 import Home from '../components/home.vue';
+import LoginForm from '@/components/LoginForm.vue';
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    component: LoginView,
+    component:  LoginForm,
   },
   {
     path: '/register',
-    component: RegisterView,
+    component: RegisterForm,
   },
   {
     path: '/user',
