@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <div class="login-title">欢迎登录在线点单系统</div>
-    <form @submit.prevent="handleSubmit">
+    <form @submit.prevent="handleSubmit" class="login-form">
       <div class="form-group">
         <label for="username">账号</label>
         <input type="text" id="username" v-model="username" required />
@@ -11,17 +11,22 @@
         <input type="password" id="password" v-model="password" required />
       </div>
       <button type="submit">登录</button>
+      <div class="register-prompt">
+        没有账号? <router-link to="/register">注册</router-link>
+      </div>
+      <button type="button" @click="goToRegister" class="register-button">注册</button>
     </form>
-    
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
-  name: 'LoginForm',
+  name: 'LoginComponent',
   setup() {
+    const router = useRouter();
     const username = ref('');
     const password = ref('');
 
@@ -30,31 +35,51 @@ export default defineComponent({
       // 这里可以添加登录逻辑，例如发送请求到后端
     };
 
+    const goToRegister = () => {
+      router.push('/register');
+    };
+
     return {
       username,
       password,
       handleSubmit,
+      goToRegister,
     };
   },
 });
 </script>
 
 <style scoped>
+/* 背景图样式 */
 .login-container {
-  max-width: 600px;
-  margin: 0 auto;
+  height: 100vh; /* 视口高度 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-image: url('beijing.jpg'); /* 引用背景图片 */
+  background-size: cover; /* 背景图片覆盖整个容器 */
+  background-position: center; /* 背景图片居中 */
+  background-repeat: no-repeat; /* 背景图片不重复 */
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  text-align: center;
 }
 
 .login-title {
-  font-size: 2.5rem; /* 设置大字体 */
+  font-size: 2.5rem;
   font-weight: bold;
-  color: rgb(35, 5, 232); /* 设置字体颜色为白色 */
+  color: white;
   margin-bottom: 20px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 添加文字阴影以增强对比 */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.login-form {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
 }
 
 .form-group {
@@ -80,18 +105,32 @@ button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  margin-bottom: 10px;
 }
 
 button:hover {
   background-color: #0056b3;
 }
 
-a {
+.register-prompt {
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+.register-button {
+  background-color: #28a745;
+}
+
+.register-button:hover {
+  background-color: #1e7e34;
+}
+
+.register-link {
   color: #007bff;
   text-decoration: none;
 }
 
-a:hover {
+.register-link:hover {
   text-decoration: underline;
 }
 </style>

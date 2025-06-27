@@ -1,30 +1,36 @@
 <template>
-  <div class="register-form">
-    <h2>Register</h2>
-    <form @submit.prevent="handleSubmit">
+  <div class="register-container">
+    <div class="register-title">欢迎注册在线点单系统</div>
+    <form @submit.prevent="handleSubmit" class="register-form">
       <div class="form-group">
-        <label for="username">Username</label>
+        <label for="username">账号</label>
         <input type="text" id="username" v-model="username" required />
       </div>
       <div class="form-group">
-        <label for="email">Email</label>
+        <label for="email">电子邮箱</label>
         <input type="email" id="email" v-model="email" required />
       </div>
       <div class="form-group">
-        <label for="password">Password</label>
+        <label for="password">密码</label>
         <input type="password" id="password" v-model="password" required />
       </div>
-      <button type="submit">Register</button>
+      <button type="submit">注册</button>
+      <div class="login-prompt">
+        是否返回登陆？ <router-link to="/">返回</router-link>
+      </div>
+      <button type="button" @click="goToLogin" class="login-button">登录</button>
     </form>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
-  name: 'RegisterForm',
+  name: 'RegisterComponent',
   setup() {
+    const router = useRouter();
     const username = ref('');
     const email = ref('');
     const password = ref('');
@@ -34,23 +40,52 @@ export default defineComponent({
       // 这里可以添加注册逻辑，例如发送请求到后端
     };
 
+    const goToLogin = () => {
+      router.push('/');
+    };
+
     return {
       username,
       email,
       password,
       handleSubmit,
+      goToLogin,
     };
   },
 });
 </script>
 
 <style scoped>
+/* 背景图样式 */
+.register-container {
+  height: 100vh; /* 视口高度 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-image: url('beijing.jpg'); /* 引用背景图片 */
+  background-size: cover; /* 背景图片覆盖整个容器 */
+  background-position: center; /* 背景图片居中 */
+  background-repeat: no-repeat; /* 背景图片不重复 */
+  padding: 20px;
+}
+
+.register-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
 .register-form {
-  max-width: 300px;
-  margin: 0 auto;
-  padding: 50px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
 }
 
 .form-group {
@@ -58,7 +93,7 @@ export default defineComponent({
 }
 
 label {
-  display: white;
+  display: block;
   margin-bottom: 5px;
 }
 
@@ -76,9 +111,32 @@ button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  margin-bottom: 10px;
 }
 
 button:hover {
   background-color: #1e7e34;
+}
+
+.login-prompt {
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+.login-button {
+  background-color: #007bff;
+}
+
+.login-button:hover {
+  background-color: #0056b3;
+}
+
+.login-link {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.login-link:hover {
+  text-decoration: underline;
 }
 </style>

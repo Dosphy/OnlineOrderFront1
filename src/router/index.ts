@@ -1,16 +1,17 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import LoginView from '../Views/LoginView.vue';
-import RegisterView from '../Views/RegisterView.vue'; // 导入注册页面组件
+import LoginView from '../components/LoginForm.vue';
+import RegisterView from '../components/RegisterForm.vue'; // 导入注册页面组件
 import UserProfile from '../components/UserProfile.vue';
 import UserInfoEdit from '../components/UserInfoEdit.vue';
 import UserOrderList from '../components/UserOrderList.vue';
 import StockManagement from '../components/StockManagement.vue'; 
+import LoginForm from '../components/LoginForm.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Login',
-    component: LoginView,
+    component: LoginForm,
   },
   {
     path: '/register',
