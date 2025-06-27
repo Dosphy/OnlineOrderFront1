@@ -30,6 +30,9 @@ export default defineComponent({
   components: { RouterLink }, // 注册组件（如果用 template 写法）
   setup() {
     const menu = [
+      { label: '首页', path: 'home' },
+      { label: '菜单', path: 'home' },
+      { label: '购物车', path: 'home' },
       { label: '个人信息编辑', path: 'edit' },
       { label: '历史订单查看', path: 'orders' }
     ];

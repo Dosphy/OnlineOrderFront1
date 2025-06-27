@@ -4,12 +4,17 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script>
+// import { defineComponent } from 'vue';
 
-export default defineComponent({
-  name: 'App',
-});
+// export default defineComponent({
+//   name: 'App',
+// });
+import LoginForm from './components/LoginForm.vue';
+
+export default {
+  components:{LoginForm}
+}
 </script>
 
 <style>

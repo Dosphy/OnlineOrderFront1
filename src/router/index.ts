@@ -1,51 +1,56 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import LoginView from '../Views/LoginView.vue';
-import RegisterView from '../Views/RegisterView.vue'; // 导入注册页面组件
+import RegisterView from '../Views/RegisterView.vue';
 import UserProfile from '../components/UserProfile.vue';
 import UserInfoEdit from '../components/UserInfoEdit.vue';
 import UserOrderList from '../components/UserOrderList.vue';
 import StockManagement from '../components/StockManagement.vue'; 
+import Home from '../components/home.vue';
 
-const routes: Array<RouteRecordRaw> = [
+const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    name: 'Login',
     component: LoginView,
   },
   {
     path: '/register',
-    name: 'Register',
-    component: RegisterView, // 添加注册页面路由
+    component: RegisterView,
   },
-{
+  {
     path: '/user',
-    name: 'UserProfile',
     component: UserProfile,
     children: [
       {
+        path: 'home',
+        component: Home,
+      },
+      {
         path: 'edit',
-        name: 'UserInfoEdit',
         component: UserInfoEdit,
       },
       {
         path: 'orders',
-        name: 'UserOrderList',
         component: UserOrderList,
       },
+      {
+        path: 'stock',
+        component: StockManagement,
+      },
       { 
-       path: '', 
-      redirect: to => {
-        return { name: 'UserInfoEdit' }; 
-      }
-    },
+        path: '',
+        redirect: '/user/edit' 
+      },
     ],
   },
-
+  { 
+    path: '/:pathMatch(.*)*', 
+    redirect: '/'
+  }
 ];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes,
+  routes
 });
 
 export default router;

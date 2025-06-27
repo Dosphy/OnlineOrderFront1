@@ -1,6 +1,5 @@
 <template>
   <div class="login-view">
-    
     <div class="login-container">
       <LoginForm />
       <p>
@@ -53,6 +52,7 @@ export default defineComponent({
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1; /* 确保内容在背景之上 */
 }
 
 .register-link {

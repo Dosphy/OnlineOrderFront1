@@ -44,6 +44,7 @@ import { defineComponent, reactive, ref } from 'vue';
 
 export default defineComponent({
   setup() {
+    
     const userInfo = reactive({
       username: '小小怪',
       password: '123456', 
