@@ -18,7 +18,7 @@
       <div class="login-prompt">
         是否返回登陆？ <router-link to="/">返回</router-link>
       </div>
-      <button type="button" @click="goToLogin" class="login-button">登录</button>
+      
     </form>
   </div>
 </template>
