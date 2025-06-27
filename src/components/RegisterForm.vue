@@ -4,15 +4,15 @@
     <form @submit.prevent="handleSubmit" class="register-form">
       <div class="form-group">
         <label for="username">账号</label>
-        <input type="text" id="username" v-model="username" required />
+        <input type="text" id="username" v-model="username"/>
       </div>
       <div class="form-group">
         <label for="email">电子邮箱</label>
-        <input type="email" id="email" v-model="email" required />
+        <input type="email" id="email" v-model="email"/>
       </div>
       <div class="form-group">
         <label for="password">密码</label>
-        <input type="password" id="password" v-model="password" required />
+        <input type="password" id="password" v-model="password"/>
       </div>
       <button type="submit">注册</button>
       <div class="login-prompt">
@@ -26,6 +26,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { ElMessage } from 'element-plus';
 
 export default defineComponent({
   name: 'RegisterComponent',
@@ -38,6 +39,11 @@ export default defineComponent({
     const handleSubmit = () => {
       console.log('Register:', { username: username.value, email: email.value, password: password.value });
       // 这里可以添加注册逻辑，例如发送请求到后端
+      ElMessage({
+        message: '注册成功！',
+        type: 'success',
+      })
+      router.push('/');
     };
 
     const goToLogin = () => {

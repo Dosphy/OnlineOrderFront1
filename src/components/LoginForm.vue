@@ -19,6 +19,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { ElMessage } from 'element-plus'
 
 export default defineComponent({
   name: 'LoginComponent',
@@ -30,6 +31,11 @@ export default defineComponent({
     const handleSubmit = () => {
       console.log('Login:', { username: username.value, password: password.value });
       // 这里可以添加登录逻辑，例如发送请求到后端
+       ElMessage({
+        message: '登录成功！',
+        type: 'success',
+      })
+      router.push('/');
     };
 
     const goToRegister = () => {
