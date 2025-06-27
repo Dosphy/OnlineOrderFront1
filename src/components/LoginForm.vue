@@ -11,9 +11,6 @@
         <input type="password" id="password" v-model="password" required />
       </div>
       <button type="submit">登录</button>
-      <div class="register-prompt">
-        没有账号? <router-link to="/register">注册</router-link>
-      </div>
       <button type="button" @click="goToRegister" class="register-button">注册</button>
     </form>
   </div>
