@@ -4,11 +4,11 @@
     <form @submit.prevent="handleSubmit" class="login-form">
       <div class="form-group">
         <label for="username">账号</label>
-        <input type="text" id="username" v-model="username" />
+        <input type="text" id="username" v-model="username" required/>
       </div>
       <div class="form-group">
         <label for="password">密码</label>
-        <input type="password" id="password" v-model="password" />
+        <input type="password" id="password" v-model="password" required/>
       </div>
       <button type="submit">登录</button>
       <button type="button" @click="goToRegister" class="register-button">注册</button>
@@ -19,7 +19,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { ElMessage } from 'element-plus'
+import { ElMessage } from 'element-plus';
+import { userLogin } from '../api/userApi.js'; 
 
 export default defineComponent({
   name: 'LoginComponent',
@@ -28,14 +29,26 @@ export default defineComponent({
     const username = ref('');
     const password = ref('');
 
-    const handleSubmit = () => {
-      console.log('Login:', { username: username.value, password: password.value });
-      // 这里可以添加登录逻辑，例如发送请求到后端
-       ElMessage({
-        message: '登录成功！',
-        type: 'success',
-      })
-      router.push('/user/home');
+    const handleSubmit = async () => {
+      try {
+        // 调用API并等待响应
+        const response = await userLogin(username.value, password.value);
+      
+        ElMessage({
+          message: '登录成功！',
+          type: 'success',
+        });
+        
+        // 跳转到首页
+        router.push('/user/home');
+      } catch (error) {
+        console.error('登录失败:', error);
+        if (error.response.data === '用户名或密码错误') {
+          ElMessage.error('用户名或密码错误');
+        } else {
+          ElMessage.error('登录失败: ' + (error.response?.data?.message || error.message));
+        }
+      }
     };
 
     const goToRegister = () => {

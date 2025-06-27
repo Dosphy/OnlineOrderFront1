@@ -4,15 +4,11 @@
     <form @submit.prevent="handleSubmit" class="register-form">
       <div class="form-group">
         <label for="username">账号</label>
-        <input type="text" id="username" v-model="username"/>
-      </div>
-      <div class="form-group">
-        <label for="email">电子邮箱</label>
-        <input type="email" id="email" v-model="email"/>
+        <input type="text" id="username" v-model="username" required/>
       </div>
       <div class="form-group">
         <label for="password">密码</label>
-        <input type="password" id="password" v-model="password"/>
+        <input type="password" id="password" v-model="password" required/>
       </div>
       <button type="submit">注册</button>
       <div class="login-prompt">
@@ -27,23 +23,35 @@
 import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
+import { userRegister } from '../api/userApi.js'; // 注意这里导入的是具名导出
 
 export default defineComponent({
   name: 'RegisterComponent',
   setup() {
     const router = useRouter();
     const username = ref('');
-    const email = ref('');
     const password = ref('');
 
-    const handleSubmit = () => {
-      console.log('Register:', { username: username.value, email: email.value, password: password.value });
-      // 这里可以添加注册逻辑，例如发送请求到后端
-      ElMessage({
-        message: '注册成功！',
-        type: 'success',
-      })
-      router.push('/');
+    const handleSubmit = async () => {
+      try {
+        // 调用API并等待响应
+        const response = await userRegister(username.value, password.value);
+
+        ElMessage({
+          message: '注册成功！',
+          type: 'success',
+        });
+        
+        // 跳转到登录页面
+        router.push('/');
+      } catch (error) {
+        console.error('注册失败:', error);
+        if (error.message === 'Request failed with status code 500') {
+          ElMessage.error('用户名已存在');
+        } else {
+          ElMessage.error('注册失败: ' + (error.response?.data?.message || error.message));
+        }
+      }
     };
 
     const goToLogin = () => {
@@ -52,7 +60,6 @@ export default defineComponent({
 
     return {
       username,
-      email,
       password,
       handleSubmit,
       goToLogin,

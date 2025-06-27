@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": ".", // 基础路径
+    "lib": ["ES2015", "DOM"],
     "paths": {
       "@/*": ["src/*"] // 将 @ 映射到 src 文件夹
     }
