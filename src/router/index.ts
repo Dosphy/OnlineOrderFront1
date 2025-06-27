@@ -4,6 +4,7 @@ import RegisterView from '../Views/RegisterView.vue'; // 导入注册页面组�
 import UserProfile from '../components/UserProfile.vue';
 import UserInfoEdit from '../components/UserInfoEdit.vue';
 import UserOrderList from '../components/UserOrderList.vue';
+import StockManagement from '../components/StockManagement.vue'; 
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -39,7 +40,7 @@ const routes: Array<RouteRecordRaw> = [
     },
     ],
   },
- 
+
 ];
 
 const router = createRouter({
