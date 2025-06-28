@@ -14,7 +14,7 @@ export default defineComponent({
 
 <style scoped>
 .home-page {
-  height: 74; /* 视口高度 */
+  height: 75vh; /* 视口高度 */
   display: flex;
   align-items: center;
   justify-content: center;

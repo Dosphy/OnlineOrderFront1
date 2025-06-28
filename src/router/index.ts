@@ -8,6 +8,7 @@ import Home from '../components/Home.vue'; // 注意文件名大小写，原代�
 import LoginForm from '@/components/LoginForm.vue';
 import DishesList from '../components/DishesList.vue'; // 引入新增的菜品列表组件
 import ShoppingCart from '@/components/ShoppingCart.vue';
+import Adminlogin from '@/components/adminlogin.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -17,6 +18,11 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/register',
     component: RegisterForm,
+  },
+  {
+    path:'/admin',
+    name:'AdminLogin',
+    component:Adminlogin,
   },
   {
     path: '/user',

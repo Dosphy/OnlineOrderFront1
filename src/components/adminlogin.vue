@@ -1,17 +1,16 @@
 <template>
   <div class="login-container">
-    <div class="login-title">欢迎登录在线点单系统</div>
+    <div class="login-title">欢迎登录在线点单管理系统</div>
     <form @submit.prevent="handleSubmit" class="login-form">
       <div class="form-group">
-        <label for="username">账号</label>
+        <label for="username">管理员账号</label>
         <input type="text" id="username" v-model="username" required/>
       </div>
       <div class="form-group">
-        <label for="password">密码</label>
+        <label for="password">管理员密码</label>
         <input type="password" id="password" v-model="password" required/>
       </div>
       <button type="submit">登录</button>
-      <button type="button" @click="goToRegister" class="register-button">注册</button>
     </form>
   </div>
 </template>
@@ -20,55 +19,51 @@
 import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
-import { userLogin } from '../api/userApi.js'; 
 
 export default defineComponent({
-  name: 'LoginComponent',
+  name: 'AdminLogin',
   setup() {
     const router = useRouter();
     const username = ref('');
     const password = ref('');
 
-    const handleSubmit = () =>{
+    const handleSubmit = () => {
+      
         ElMessage({
           message: '登录成功！',
           type: 'success',
         });
         
-        // 跳转到首页
+        // 跳转到管理员首页
         router.push('/user/home');
-    }
-    // const handleSubmit = async () => {
-    //   try {
-    //     // 调用API并等待响应
-    //     const response = await userLogin(username.value, password.value);
       
-    //     ElMessage({
-    //       message: '登录成功！',
-    //       type: 'success',
-    //     });
-        
-    //     // 跳转到首页
-    //     router.push('/user/home');
-    //   } catch (error) {
-    //     console.error('登录失败:', error);
-    //     if (error.response.data === '用户名或密码错误') {
-    //       ElMessage.error('用户名或密码错误');
-    //     } else {
-    //       ElMessage.error('登录失败: ' + (error.response?.data?.message || error.message));
-    //     }
-    //   }
-    // };
-
-    const goToRegister = () => {
-      router.push('/register');
     };
+    /*const handleSubmit = async () => {
+      try {
+        // 调用API并等待响应
+        const response = await adminLogin(username.value, password.value);
+      
+        ElMessage({
+          message: '登录成功！',
+          type: 'success',
+        });
+        
+        // 跳转到管理员首页
+        router.push('/admin/home');
+      } catch (error) {
+        console.error('登录失败:', error);
+        if (error.response.data === '用户名或密码错误') {
+          ElMessage.error('用户名或密码错误');
+        } else {
+          ElMessage.error('登录失败: ' + (error.response?.data?.message || error.message));
+        }
+      }
+    };*/
 
     return {
       username,
       password,
       handleSubmit,
-      goToRegister,
     };
   },
 });
@@ -82,7 +77,7 @@ export default defineComponent({
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-image: url('beijing.jpg'); /* 引用背景图片 */
+  background-image: url('admin.jpg'); /* 引用背景图片 */
   background-size: cover; /* 背景图片覆盖整个容器 */
   background-position: center; /* 背景图片居中 */
   background-repeat: no-repeat; /* 背景图片不重复 */
@@ -130,32 +125,10 @@ button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 button:hover {
   background-color: #0056b3;
-}
-
-.register-prompt {
-  margin-top: 10px;
-  font-size: 0.9rem;
-}
-
-.register-button {
-  background-color: #28a745;
-}
-
-.register-button:hover {
-  background-color: #1e7e34;
-}
-
-.register-link {
-  color: #007bff;
-  text-decoration: none;
-}
-
-.register-link:hover {
-  text-decoration: underline;
 }
 </style>
