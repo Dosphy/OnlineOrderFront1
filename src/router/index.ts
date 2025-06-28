@@ -62,7 +62,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/admin',
     component: AdminHome,
-    redirect: '/admin/prime', 
+    redirect: '/adminLogin', 
     children: [
       {
         path:'prime',
