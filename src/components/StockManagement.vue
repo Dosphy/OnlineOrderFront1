@@ -1,29 +1,66 @@
 <template>
   <div class="stock-management">
     <h2>库存管理</h2>
-    <!-- 库存列表 -->
-    <div class="stock-list">
-      <div 
-        v-for="(item, index) in stockList" 
-        :key="index" 
-        class="stock-item"
-      >
-        <div class="item-info">
-          <span>{{ item.name }}</span>
-          <span>当前库存：{{ item.quantity }}</span>
-        </div>
-        <div class="actions">
-          <el-button type="primary" @click="handleReplenish(index)">补货</el-button>
-          <span 
-            v-if="item.quantity < item.warningThreshold" 
-            class="warning"
-          >
-            库存不足！
-          </span>
-        </div>
-      </div>
-    </div>
   </div>
+  <el-table :data="stockList" style="width: 100%">
+      <el-table-column label="材料名称" width="180">
+        <template #default="scope">
+          <el-popover effect="light" trigger="hover" placement="top" width="auto">
+            <template #default>
+              <div>材料名称 {{ scope.row.name }}</div>
+              <div>类型: {{ scope.row.type }}</div>
+              <div>当前库存: {{ scope.row.quantity }}</div>
+              <div>最低库存: {{ scope.row.warningThreshold }}</div>
+            </template>
+            <template #reference>
+              <el-tag :type="scope.row.quantity < scope.row.warningThreshold ? 'danger' : 'success'">
+                {{ scope.row.name }}
+              </el-tag>
+            </template>
+          </el-popover>
+        </template>
+      </el-table-column>
+      
+      <el-table-column label="类型" width="120">
+        <template #default="scope">
+          <span>{{ scope.row.type }}</span>
+        </template>
+      </el-table-column>
+      
+      <el-table-column label="库存数量" width="120">
+        <template #default="scope">
+          <span :class="{ 'warning-text': scope.row.quantity < scope.row.warningThreshold }">
+            {{ scope.row.quantity }}
+          </span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="最低库存" width="120">
+        <template #default="scope">
+          <span>{{ scope.row.warningThreshold }}</span>
+        </template>
+      </el-table-column>
+      
+      <el-table-column label="操作">
+        <template #default="scope">
+          <el-button
+            size="small"
+            type="primary"
+            @click="handleReplenish(scope.$index)"
+          >
+            补货
+          </el-button>
+          <el-tag 
+            v-if="scope.row.quantity < scope.row.warningThreshold" 
+            type="danger" 
+            size="small"
+            style="margin-left: 8px"
+          >
+            库存不足
+          </el-tag>
+        </template>
+      </el-table-column>
+    </el-table>
 </template>
 
 <script lang="ts">
