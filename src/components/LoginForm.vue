@@ -4,11 +4,11 @@
     <form @submit.prevent="handleSubmit" class="login-form">
       <div class="form-group">
         <label for="username">账号</label>
-        <input type="text" id="username" v-model="username" required/>
+        <input type="text" id="username" v-model="username"/>
       </div>
       <div class="form-group">
         <label for="password">密码</label>
-        <input type="password" id="password" v-model="password" required/>
+        <input type="password" id="password" v-model="password"/>
       </div>
       <button type="submit">登录</button>
       <button type="button" @click="goToRegister" class="register-button">注册</button>
