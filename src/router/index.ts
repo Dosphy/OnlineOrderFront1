@@ -13,7 +13,7 @@ import OrderProcessing from '../components/OrderProcessing.vue';
 import MenuManagement from '../components/MenuManagement.vue';
 import ShoppingCart from '@/components/ShoppingCart.vue';
 import Adminlogin from '@/components/adminlogin.vue';
-
+import adminprim from '@/components/adminprim.vue';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -62,8 +62,12 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/admin',
     component: AdminHome,
-    redirect: '/admin/user', 
+    redirect: '/admin/prime', 
     children: [
+      {
+        path:'prime',
+        component:adminprim,
+      },
       {
         path: 'user',
         component: UserManagement

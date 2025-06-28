@@ -35,7 +35,7 @@ export default defineComponent({
         });
         
         // 跳转到管理员首页
-        router.push('/admin');
+        router.push('/admin/prime');
       
     };
     /*const handleSubmit = async () => {

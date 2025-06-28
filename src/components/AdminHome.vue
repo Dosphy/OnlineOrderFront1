@@ -28,10 +28,12 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   setup() {
     const menu = [
+       { label: '首页', path: '/admin/prime' },
       { label: '用户信息管理', path: '/admin/user' },
       { label: '订单处理', path: '/admin/order' },
       { label: '菜单管理', path: '/admin/menu' },
       { label: '库存管理', path: '/admin/stock' },
+      
     ];
 
     return {
@@ -48,20 +50,20 @@ export default defineComponent({
 }
  .sidebar {
   width: 200px;
-  background-color: #f8f9fa;
-  border-right: 1px solid #eee;
+  background-color: #046ef0cf;
+  border-right: 1px solid #0675f5;
 }
 .sidebar > div {
   padding: 15px;
   cursor: pointer;
 }
 .sidebar > div.active {
-  background-color: #e9ecef;
+  background-color: #edf1f4;
   font-weight: bold;
 }
 .content {
   flex: 1;
   padding: 24px;
-  background: #ffffff;
+  background: #fcfcfd;
 }
 </style>
