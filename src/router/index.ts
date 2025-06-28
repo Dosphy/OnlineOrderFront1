@@ -3,10 +3,14 @@ import RegisterForm from '@/components/RegisterForm.vue';
 import UserProfile from '../components/UserProfile.vue';
 import UserInfoEdit from '../components/UserInfoEdit.vue';
 import UserOrderList from '../components/UserOrderList.vue';
-import StockManagement from '../components/StockManagement.vue'; 
-import Home from '../components/Home.vue'; // 注意文件名大小写，原代码中是 Home.vue，不是 home.vue
+import StockManagement from '../components/StockManagement.vue';
+import Home from '../components/Home.vue';
 import LoginForm from '@/components/LoginForm.vue';
-import DishesList from '../components/DishesList.vue'; // 引入新增的菜品列表组件
+import DishesList from '../components/DishesList.vue';
+import AdminHome from '../components/AdminHome.vue';
+import UserManagement from '../components/UserManagement.vue';
+import OrderProcessing from '../components/OrderProcessing.vue';
+import MenuManagement from '../components/MenuManagement.vue';
 import ShoppingCart from '@/components/ShoppingCart.vue';
 import Adminlogin from '@/components/adminlogin.vue';
 
@@ -27,13 +31,14 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/user',
     component: UserProfile,
+    redirect: '/user/edit',
     children: [
       {
         path: 'home',
         component: Home,
       },
       {
-        path: 'menu', // 新增菜品列表路径
+        path: 'menu',
         component: DishesList,
       },
       {
@@ -52,11 +57,30 @@ const routes: RouteRecordRaw[] = [
         path: 'stock',
         component: StockManagement,
       },
-      { 
-        path: '',
-        redirect: '/user/edit' 
-      },
     ],
+  },
+  {
+    path: '/admin',
+    component: AdminHome,
+     redirect: '/admin/user', 
+    children: [
+      {
+        path: 'user',
+        component: UserManagement
+      },
+      {
+        path: 'order',
+        component: OrderProcessing
+      },
+      {
+        path: 'menu',
+        component: MenuManagement
+      },
+      {
+        path: 'stock',
+        component: StockManagement
+      },
+    ]
   },
   { 
     path: '/:pathMatch(.*)*', 
