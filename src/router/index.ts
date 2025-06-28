@@ -24,7 +24,7 @@ const routes: RouteRecordRaw[] = [
     component: RegisterForm,
   },
   {
-    path:'/admin',
+    path:'/adminLogin',
     name:'AdminLogin',
     component:Adminlogin,
   },
@@ -62,7 +62,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/admin',
     component: AdminHome,
-     redirect: '/admin/user', 
+    redirect: '/admin/user', 
     children: [
       {
         path: 'user',

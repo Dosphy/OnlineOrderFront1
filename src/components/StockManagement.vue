@@ -13,12 +13,7 @@
           <span>当前库存：{{ item.quantity }}</span>
         </div>
         <div class="actions">
-          <button 
-            v-if="item.type === 'material'" 
-            @click="handleReplenish(index)"
-          >
-            补货
-          </button>
+          <el-button type="primary" @click="handleReplenish(index)">补货</el-button>
           <span 
             v-if="item.quantity < item.warningThreshold" 
             class="warning"
@@ -28,30 +23,12 @@
         </div>
       </div>
     </div>
-    <!-- 补货弹窗 -->
-    <div 
-      class="replenish-modal" 
-      v-if="showReplenishModal"
-    >
-      <div class="modal-content">
-        <h3>补货 - {{ currentReplenishItem.name }}</h3>
-        <input 
-          v-model.number="replenishQuantity" 
-          type="number" 
-          placeholder="请输入补货数量" 
-          min="1"
-        />
-        <div class="modal-buttons">
-          <button @click="confirmReplenish">确认补货</button>
-          <button @click="showReplenishModal = false">取消</button>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, ref } from 'vue';
+import { ElMessage,ElMessageBox } from 'element-plus';
 
 export default defineComponent({
   setup() {
@@ -65,7 +42,7 @@ export default defineComponent({
       },
       { 
         name: '一次性杯子', 
-        type: 'package', 
+        type: 'material', 
         quantity: 100, 
         warningThreshold: 30 
       },
@@ -77,33 +54,45 @@ export default defineComponent({
       }
     ]);
 
-    const showReplenishModal = ref(false);
     const currentReplenishItem = ref<any>(null);
-    const replenishQuantity = ref(1);
 
     // 打开补货弹窗
     const handleReplenish = (index: number) => {
       currentReplenishItem.value = stockList[index];
-      showReplenishModal.value = true;
+      ElMessageBox.prompt('补货-'+currentReplenishItem.value.name, '补货', {
+        confirmButtonText: '确认补货',
+        cancelButtonText: '取消',
+        inputPattern:/^[1-9]\d*$/,
+        inputErrorMessage: '无效的数字',
+      })
+    .then(({ value }) => {
+      const number = Number(value);
+      confirmReplenish(number);
+      ElMessage({
+        type: 'success',
+        message: `共补货:${value}件`,
+      })
+      
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: '补货取消',
+      })
+    })
+    
     };
 
     // 确认补货
-    const confirmReplenish = () => {
-      if (replenishQuantity.value > 0) {
-        currentReplenishItem.value.quantity += replenishQuantity.value;
-        showReplenishModal.value = false;
-        replenishQuantity.value = 1;
-        alert('补货成功！');
-      } else {
-        alert('请输入有效的补货数量');
-      }
+    const confirmReplenish = (number) => {
+      if (number > 0) {
+        currentReplenishItem.value.quantity += number;
+      } 
     };
 
     return {
       stockList,
-      showReplenishModal,
       currentReplenishItem,
-      replenishQuantity,
       handleReplenish,
       confirmReplenish
     };

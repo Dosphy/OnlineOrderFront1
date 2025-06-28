@@ -4,11 +4,11 @@
     <form @submit.prevent="handleSubmit" class="login-form">
       <div class="form-group">
         <label for="username">管理员账号</label>
-        <input type="text" id="username" v-model="username" required/>
+        <input type="text" id="username" v-model="username"/>
       </div>
       <div class="form-group">
         <label for="password">管理员密码</label>
-        <input type="password" id="password" v-model="password" required/>
+        <input type="password" id="password" v-model="password"/>
       </div>
       <button type="submit">登录</button>
     </form>
@@ -35,7 +35,7 @@ export default defineComponent({
         });
         
         // 跳转到管理员首页
-        router.push('/user/home');
+        router.push('/admin');
       
     };
     /*const handleSubmit = async () => {
