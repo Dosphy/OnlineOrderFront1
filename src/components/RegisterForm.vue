@@ -32,27 +32,36 @@ export default defineComponent({
     const username = ref('');
     const password = ref('');
 
-    const handleSubmit = async () => {
-      try {
-        // 调用API并等待响应
-        const response = await userRegister(username.value, password.value);
-
-        ElMessage({
+    const handleSubmit = () => {
+      ElMessage({
           message: '注册成功！',
           type: 'success',
         });
-        
         // 跳转到登录页面
         router.push('/');
-      } catch (error) {
-        console.error('注册失败:', error);
-        if (error.message === 'Request failed with status code 500') {
-          ElMessage.error('用户名已存在');
-        } else {
-          ElMessage.error('注册失败: ' + (error.response?.data?.message || error.message));
-        }
-      }
     };
+
+    // const handleSubmit = async () => {
+    //   try {
+    //     // 调用API并等待响应
+    //     const response = await userRegister(username.value, password.value);
+
+    //     ElMessage({
+    //       message: '注册成功！',
+    //       type: 'success',
+    //     });
+        
+    //     // 跳转到登录页面
+    //     router.push('/');
+    //   } catch (error) {
+    //     console.error('注册失败:', error);
+    //     if (error.message === 'Request failed with status code 500') {
+    //       ElMessage.error('用户名已存在');
+    //     } else {
+    //       ElMessage.error('注册失败: ' + (error.response?.data?.message || error.message));
+    //     }
+    //   }
+    // };
 
     const goToLogin = () => {
       router.push('/');

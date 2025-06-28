@@ -20,8 +20,10 @@
         <div class="dish-monthly-sales">月销量：{{ dish.monthlySales }}单</div>
         <div class="dish-description">描述：{{ dish.description }}</div>
         <div class="dish-count">
-          已点数量：{{ dish.count }}
+          数量：{{ dish.count }}
           <button @click="incrementCount(dish)">+</button>
+          <button v-if="dish.count > 0" @click="decrementCount(dish)">-</button>
+          <button v-if="dish.count > 0" @click="addToCart(dish)"class="add-to-cart-btn">加入购物车</button>
         </div>
       </div>
     </div>
@@ -30,9 +32,12 @@
 
 <script lang="ts">
 import { defineComponent, reactive } from 'vue';
+import { useCartStore } from '../stores/cart';
 
 export default defineComponent({
-  setup() {
+setup() {
+    const cartStore = useCartStore();
+    
     const dishes = reactive([
       {
         name: '排骨焖饭',
@@ -58,9 +63,24 @@ export default defineComponent({
       dish.count++;
     };
 
+    const decrementCount = (dish: any) => {
+      if (dish.count > 0) {
+        dish.count--;
+      }
+    };
+
+    const addToCart = (dish: any) => {
+      if (dish.count > 0) {
+        cartStore.addToCart({ ...dish });
+        dish.count = 0; // 重置数量
+      }
+    };
+
     return {
       dishes,
-      incrementCount
+      incrementCount,
+      decrementCount,
+      addToCart
     };
   }
 });
