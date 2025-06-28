@@ -3,7 +3,7 @@
     <h2>库存管理</h2>
   </div>
   <el-table :data="stockList" style="width: 100%">
-      <el-table-column label="材料名称" width="180">
+      <el-table-column label="材料名称" minwidth="200">
         <template #default="scope">
           <el-popover effect="light" trigger="hover" placement="top" width="auto">
             <template #default>
@@ -21,13 +21,13 @@
         </template>
       </el-table-column>
       
-      <el-table-column label="类型" width="120">
+      <el-table-column label="类型" minwidth="200">
         <template #default="scope">
           <span>{{ scope.row.type }}</span>
         </template>
       </el-table-column>
       
-      <el-table-column label="库存数量" width="120">
+      <el-table-column label="库存数量" minwidth="200">
         <template #default="scope">
           <span :class="{ 'warning-text': scope.row.quantity < scope.row.warningThreshold }">
             {{ scope.row.quantity }}
@@ -35,7 +35,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="最低库存" width="120">
+      <el-table-column label="最低库存" width="200">
         <template #default="scope">
           <span>{{ scope.row.warningThreshold }}</span>
         </template>
