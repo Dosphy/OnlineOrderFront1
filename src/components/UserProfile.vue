@@ -48,8 +48,8 @@ export default defineComponent({
 }
 .sidebar {
   width: 200px;
-  background-color: #f8f9fa;
-  border-right: 1px solid #eee;
+  background-color: #0885fb;
+  border-right: 1px solid #058af6;
 }
 .sidebar > div {
   padding: 15px;
