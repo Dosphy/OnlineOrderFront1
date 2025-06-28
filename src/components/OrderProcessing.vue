@@ -8,7 +8,7 @@
         <option value="processing">处理中</option>
         <option value="completed">已完成</option>
       </select>
-      <button @click="refreshOrders">刷新</button>
+      <button class="refresh-btn" @click="refreshOrders">刷新</button>
     </div>
     <table class="order-table">
       <thead>
@@ -27,8 +27,8 @@
           <td>{{ order.foodName }}</td>
           <td>{{ order.status }}</td>
           <td>
-            <button @click="processOrder(order)" v-if="order.status === 'pending'">处理</button>
-            <button @click="completeOrder(order)" v-if="order.status === 'processing'">完成</button>
+            <button class="process-btn" @click="processOrder(order)" v-if="order.status === 'pending'">处理</button>
+            <button class="complete-btn" @click="completeOrder(order)" v-if="order.status === 'processing'">完成</button>
           </td>
         </tr>
       </tbody>
@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed, ref } from 'vue'; //添加 ref 导入
+import { defineComponent, reactive, computed, ref } from 'vue'; 
 
 export default defineComponent({
   setup() {
@@ -50,10 +50,10 @@ export default defineComponent({
     const filterStatus = ref('all'); 
 
     const filteredOrders = computed(() => {
-      if (filterStatus.value === 'all') { //访问 ref 的值需要 .value
+      if (filterStatus.value === 'all') { 
         return orders;
       }
-      return orders.filter(order => order.status === filterStatus.value); //使用 .value
+      return orders.filter(order => order.status === filterStatus.value); 
     });
 
     const processOrder = (order: any) => {
@@ -87,9 +87,18 @@ export default defineComponent({
 .order-processing {
   max-width: 1000px;
   margin: 0 auto;
+  padding: 20px;
 }
 .order-filter {
   margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+.order-filter select {
+  padding: 6px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 .order-table {
   width: 100%;
@@ -98,7 +107,46 @@ export default defineComponent({
 .order-table th,
 .order-table td {
   border: 1px solid #ccc;
-  padding: 8px;
+  padding: 10px;
   text-align: left;
+}
+.order-table th {
+  background-color: #f4f4f4;
+}
+.refresh-btn {
+  background-color: #409eff; /* 蓝色 */
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.refresh-btn:hover {
+  background-color: #66b1ff;
+}
+.process-btn {
+  background-color: #67c23a; /* 绿色 */
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.process-btn:hover {
+  background-color: #85ce61;
+}
+.complete-btn {
+  background-color: #f5a623; /* 黄色 */
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.complete-btn:hover {
+  background-color: #f7b548;
 }
 </style>
