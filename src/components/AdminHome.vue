@@ -6,13 +6,15 @@
         :key="index" 
         :to="item.path" 
         custom 
-        v-slot="{ href, navigate, isActive }"
+        v-slot="{ navigate, isActive }"
       >
         <div 
           :class="{ active: isActive }" 
           @click="navigate"
+          class="menu-item"
         >
-          {{ item.label }}
+          <span class="menu-icon">{{ item.icon }}</span>
+          <span class="menu-label">{{ item.label }}</span>
         </div>
       </router-link>
     </div>
@@ -28,12 +30,11 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   setup() {
     const menu = [
-       { label: '首页', path: '/admin/prime' },
-      { label: '用户信息管理', path: '/admin/user' },
-      { label: '订单处理', path: '/admin/order' },
-      { label: '菜单管理', path: '/admin/menu' },
-      { label: '库存管理', path: '/admin/stock' },
-      
+      { label: '首页', path: '/admin/prime', icon: '🏠' },
+      { label: '用户信息管理', path: '/admin/user', icon: '👤' },
+      { label: '订单处理', path: '/admin/order', icon: '🛒' },
+      { label: '菜单管理', path: '/admin/menu', icon: '📜' },
+      { label: '库存管理', path: '/admin/stock', icon: '📦' },
     ];
 
     return {
@@ -48,19 +49,35 @@ export default defineComponent({
   display: flex;
   min-height: 100vh;
 }
- .sidebar {
+
+.sidebar {
   width: 200px;
-  background-color: #046ef0cf;
-  border-right: 1px solid #0675f5;
+  background-color: #0072f2;
+  display: flex;
+  flex-direction: column;
 }
-.sidebar > div {
-  padding: 15px;
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
   cursor: pointer;
+  color: #ffffff;
+  transition: background 0.3s;
 }
+
+.menu-icon {
+  font-size: 18px;
+  margin-right: 12px;
+  width: 20px; /* 统一图标宽度，保证对齐 */
+  text-align: center;
+}
+
 .sidebar > div.active {
-  background-color: #edf1f4;
-  font-weight: bold;
+  background-color: #e5e7eb;
+  color: #0072f2;
 }
+
 .content {
   flex: 1;
   padding: 24px;
