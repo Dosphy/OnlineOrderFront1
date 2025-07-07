@@ -38,7 +38,7 @@ export const userRegister = async (username, password, email, phone) => { //成�
 //获取当前用户信息
 export const userInfo = async (username) => {
   const response = await axios.get(`${API_BASE_URL}/userInfo`, { //成功返回900
-    params: {  
+    params: {
       username,
     }
   }, {
@@ -53,12 +53,10 @@ export const userInfo = async (username) => {
 //更新用户信息
 export const updateUserInfo = async (username, password, email, phone) => { //成功返回300
   const response = await axios.post(`${API_BASE_URL}/updateUserInfo`, {
-
-      username,
-      password,
-      email,
-      phone
-    
+    username,
+    password,
+    email,
+    phone
   }, {
     headers: {
       'Content-Type': 'application/json'
