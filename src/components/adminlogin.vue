@@ -39,7 +39,7 @@ export default defineComponent({
         });
         
         // 跳转到管理员首页
-        router.push('/admin/home');
+        router.push('/admin/prime');
       } catch (error) {
         console.error('登录失败:', error);
         if (error.response.data === '用户名或密码错误') {
