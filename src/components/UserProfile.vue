@@ -11,8 +11,11 @@
         <div 
           :class="{ active: isActive }" 
           @click="navigate"
+          class="menu-item"
         >
-          {{ item.label }}
+          <!-- 可扩展图标，如Iconfont -->
+          <span class="icon">{{ item.icon }}</span>
+          <span class="label">{{ item.label }}</span>
         </div>
       </router-link>
     </div>
@@ -24,17 +27,17 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { useRouter, RouterLink } from 'vue-router'; // 确保导入
+import { RouterLink } from 'vue-router';
 
 export default defineComponent({
-  components: { RouterLink }, // 注册组件（如果用 template 写法）
+  components: { RouterLink },
   setup() {
     const menu = [
-      { label: '首页', path: 'home' },
-      { label: '菜单', path: 'menu' },
-      { label: '购物车', path: 'shop' },
-      { label: '个人信息编辑', path: 'edit' },
-      { label: '历史订单查看', path: 'orders' }
+      { label: '首页', path: 'home', icon: '🏠' },  // 简易图标，可替换为SVG/Icon组件
+      { label: '菜单', path: 'menu', icon: '🍴' },
+      { label: '购物车', path: 'shop', icon: '🛒' },
+      { label: '个人信息编辑', path: 'edit', icon: '🖋️' },
+      { label: '历史订单查看', path: 'orders', icon: '📜' }
     ];
     return { menu };
   }
@@ -45,22 +48,52 @@ export default defineComponent({
 .user-profile {
   display: flex;
   min-height: calc(100vh - 60px);
+  font-family: 'Microsoft YaHei', sans-serif;
 }
+
 .sidebar {
-  width: 200px;
-  background-color: #0885fb;
-  border-right: 1px solid #058af6;
+  width: 220px;
+  background: linear-gradient(180deg, #0885fb, #0578e6); /* 渐变背景更立体 */
+  border-right: 1px solid #046ddf;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.1); /* 侧栏阴影 */
 }
-.sidebar > div {
-  padding: 15px;
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
   cursor: pointer;
+  color: #fff;
+  transition: all 0.3s ease;
 }
-.sidebar > div.active {
-  background-color: #e9ecef;
-  font-weight: bold;
+
+.menu-item .icon {
+  font-size: 18px;
+  margin-right: 10px;
 }
+
+.menu-item .label {
+  flex: 1;
+  font-size: 16px;
+}
+
+/* 交互反馈强化 */
+.menu-item:hover {
+  background: rgba(255,255,255,0.1);
+  transform: translateX(4px);
+}
+
+.menu-item.active {
+  background: #e9ecef;
+  color: #0885fb;
+  font-weight: 600;
+  transform: translateX(0);
+  box-shadow: inset 2px 0 0 #ff8c00; /* 左侧高亮线 */
+}
+
 .content {
   flex: 1;
-  padding: 20px;
+  padding: 30px;
+  background: #f8f9fa; /* 浅灰背景区分内容区 */
 }
 </style>

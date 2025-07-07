@@ -9,12 +9,11 @@
         <div 
           class="cart-item" 
           v-for="(item, index) in cartItems" 
-          :key="item.name + item.selectedSpec"
+          :key="item.dish_name"
         >
-          <img :src="item.image" alt="item.name" class="cart-item-img" />
+          <img :src="item.path" alt="item.name" class="cart-item-img" />
           <div class="cart-item-info">
-            <div class="cart-item-name">{{ item.name }}</div>
-            <div class="cart-item-spec">规格：{{ item.selectedSpec }}</div>
+            <div class="cart-item-name">{{ item.dish_name }}</div>
             <div class="cart-item-price">单价：{{ item.price }}元</div>
             <div class="cart-item-count">
               <button @click="decrementCount(index)">-</button>

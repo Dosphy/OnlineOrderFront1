@@ -2,38 +2,46 @@
   <div class="menu-management">
     <h2>菜单管理</h2>
     
-    <!-- 新增菜品表单 -->
-    <div class="add-dish-form">
+    <!-- 新增菜品表单（表格布局） -->
+    <div class="panel add-dish-form">
       <h3>新增菜品</h3>
-      <form @submit.prevent="addDish">
-        <div class="form-group">
-          <label>菜品名称</label>
-          <input v-model="newDish.name" required />
-        </div>
-        <div class="form-group">
-          <label>图片路径</label>
-          <input v-model="newDish.image" placeholder="/dish-image.jpg" />
-        </div>
-        <div class="form-group">
-          <label>价格</label>
-          <input v-model.number="newDish.price" type="number" min="0" step="0.01" required />
-        </div>
-        <div class="form-group">
-          <label>月销量</label>
-          <input v-model.number="newDish.monthlySales" type="number" min="0" required />
-        </div>
-        <div class="form-group">
-          <label>描述</label>
-          <textarea v-model="newDish.description" rows="3"></textarea>
-        </div>
-        <button type="submit">添加</button>
+      <form @submit.prevent="addDish" class="form-table">
+        <table>
+          <tbody>
+            <tr>
+              <td class="label-cell"><label>菜品名称</label></td>
+              <td class="input-cell"><input v-model="newDish.name" required /></td>
+            </tr>
+            <tr>
+              <td class="label-cell"><label>图片路径</label></td>
+              <td class="input-cell"><input v-model="newDish.image" placeholder="/dish-image.jpg" /></td>
+            </tr>
+            <tr>
+              <td class="label-cell"><label>价格</label></td>
+              <td class="input-cell"><input v-model.number="newDish.price" type="number" min="0" step="0.01" required /></td>
+            </tr>
+            <tr>
+              <td class="label-cell"><label>月销量</label></td>
+              <td class="input-cell"><input v-model.number="newDish.monthlySales" type="number" min="0" required /></td>
+            </tr>
+            <tr>
+              <td class="label-cell"><label>描述</label></td>
+              <td class="input-cell"><textarea v-model="newDish.description" rows="3"></textarea></td>
+            </tr>
+            <tr>
+              <td colspan="2" class="button-cell">
+                <button type="submit">添加</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </form>
     </div>
     
-    <!-- 菜品列表 -->
-    <div class="dish-list">
+    <!-- 菜品列表（保持表格，优化样式统一） -->
+    <div class="panel dish-list">
       <h3>菜品列表</h3>
-      <table>
+      <table class="data-table">
         <thead>
           <tr>
             <th>ID</th>
@@ -51,7 +59,7 @@
             <td>{{ dish.name }}</td>
             <td>{{ dish.price }} 元</td>
             <td>{{ dish.monthlySales }} 单</td>
-            <td>
+            <td class="action-cell">
               <button @click="editDish(index)">编辑</button>
               <button @click="deleteDish(index)">删除</button>
             </td>
@@ -60,35 +68,41 @@
       </table>
     </div>
     
-    <!-- 编辑菜品弹窗 -->
+    <!-- 编辑弹窗（同样表格布局） -->
     <div v-if="editingIndex !== -1" class="edit-modal">
       <div class="modal-content">
         <h3>编辑菜品</h3>
-        <form @submit.prevent="saveEdit">
-          <div class="form-group">
-            <label>菜品名称</label>
-            <input v-model="editedDish.name" required />
-          </div>
-          <div class="form-group">
-            <label>图片路径</label>
-            <input v-model="editedDish.image" placeholder="/dish-image.jpg" />
-          </div>
-          <div class="form-group">
-            <label>价格</label>
-            <input v-model.number="editedDish.price" type="number" min="0" step="0.01" required />
-          </div>
-          <div class="form-group">
-            <label>月销量</label>
-            <input v-model.number="editedDish.monthlySales" type="number" min="0" required />
-          </div>
-          <div class="form-group">
-            <label>描述</label>
-            <textarea v-model="editedDish.description" rows="3"></textarea>
-          </div>
-          <div class="form-actions">
-            <button type="submit">保存</button>
-            <button @click="cancelEdit">取消</button>
-          </div>
+        <form @submit.prevent="saveEdit" class="form-table">
+          <table>
+            <tbody>
+              <tr>
+                <td class="label-cell"><label>菜品名称</label></td>
+                <td class="input-cell"><input v-model="editedDish.name" required /></td>
+              </tr>
+              <tr>
+                <td class="label-cell"><label>图片路径</label></td>
+                <td class="input-cell"><input v-model="editedDish.image" placeholder="/dish-image.jpg" /></td>
+              </tr>
+              <tr>
+                <td class="label-cell"><label>价格</label></td>
+                <td class="input-cell"><input v-model.number="editedDish.price" type="number" min="0" step="0.01" required /></td>
+              </tr>
+              <tr>
+                <td class="label-cell"><label>月销量</label></td>
+                <td class="input-cell"><input v-model.number="editedDish.monthlySales" type="number" min="0" required /></td>
+              </tr>
+              <tr>
+                <td class="label-cell"><label>描述</label></td>
+                <td class="input-cell"><textarea v-model="editedDish.description" rows="3"></textarea></td>
+              </tr>
+              <tr>
+                <td colspan="2" class="button-cell">
+                  <button type="submit">保存</button>
+                  <button @click="cancelEdit">取消</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </form>
       </div>
     </div>
@@ -140,9 +154,7 @@ export default defineComponent({
     // 添加菜品
     const addDish = () => {
       if (!newDish.name || !newDish.price) return;
-      
       dishes.push({...newDish});
-      
       // 重置表单
       newDish.name = '';
       newDish.image = '';
@@ -155,7 +167,6 @@ export default defineComponent({
     const editDish = (index: number) => {
       editingIndex.value = index;
       const dish = dishes[index];
-      
       // 复制数据到编辑表单
       editedDish.name = dish.name;
       editedDish.image = dish.image;
@@ -167,7 +178,6 @@ export default defineComponent({
     // 保存编辑
     const saveEdit = () => {
       if (!editedDish.name || !editedDish.price) return;
-      
       const index = editingIndex.value;
       if (index !== -1) {
         dishes[index] = {...editedDish};
@@ -203,107 +213,177 @@ export default defineComponent({
 </script>
 
 <style scoped>
+/* 整体容器 */
 .menu-management {
   max-width: 1000px;
   margin: 0 auto;
   padding: 20px;
+  font-family: Arial, sans-serif;
 }
 
-.add-dish-form, .dish-list {
+/* 面板通用样式（新增、列表） */
+.panel {
   margin-bottom: 30px;
   padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.form-group {
+.panel h3 {
   margin-bottom: 15px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2d3d;
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.form-group input, .form-group textarea {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-button {
-  padding: 8px 15px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-right: 10px;
-}
-
-button:hover {
-  background-color: #45a049;
-}
-
-button:last-child {
-  margin-right: 0;
-}
-
-table {
+/* 表单表格 & 数据表格 通用布局 */
+.form-table, .data-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-table, th, td {
-  border: 1px solid #ddd;
-  padding: 8px;
+.form-table tr, .data-table tr {
+  border-bottom: 1px solid #f2f2f2;
 }
 
-th {
-  background-color: #f2f2f2;
+.form-table tr:last-child, .data-table tr:last-child {
+  border-bottom: none;
+}
+
+.form-table td, .data-table th, .data-table td {
+  padding: 12px 8px;
+  vertical-align: middle;
+}
+
+/* 表单标签列 */
+.label-cell {
+  width: 120px;
+  text-align: right;
+  color: #475669;
+  padding-right: 15px;
+}
+
+/* 表单输入列（关键修改：让输入框填满父容器） */
+.input-cell {
+  width: calc(100% - 120px);
+}
+
+.input-cell input,
+.input-cell textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-cell input:focus,
+.input-cell textarea:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+/* 按钮列（关键修改：居中对齐） */
+.button-cell {
+  text-align: center !important;
+  padding-top: 20px !important;
+}
+
+/* 数据表格表头 */
+.data-table thead {
+  background: #f8fafc;
+}
+
+.data-table th {
+  font-weight: 600;
+  color: #1f2d3d;
   text-align: left;
+  padding: 14px 8px;
 }
 
-tr:nth-child(even) {
-  background-color: #f2f2f2;
+/* 数据表格行交互 */
+.data-table tbody tr:hover {
+  background: #f9fafc;
 }
 
-tr:hover {
-  background-color: #f5f5f5;
+/* 操作列（按钮间距） */
+.action-cell button {
+  margin-right: 8px;
 }
 
+/* 图片样式 */
 .dish-image {
   max-width: 80px;
   max-height: 60px;
   object-fit: cover;
   border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
+/* 按钮通用样式 */
+button {
+  padding: 8px 16px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 14px;
+}
+
+button:hover {
+  background: #45a049;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+/* 编辑弹窗 */
 .edit-modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 100;
 }
 
 .modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 5px;
-  width: 500px;
-  max-width: 90%;
+  width: 480px;
+  padding: 24px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 20px;
+/* 弹窗关闭按钮 */
+.close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 20px;
+  color: #999;
+  cursor: pointer;
 }
-</style>
+
+.close-button:hover {
+  color: #333;
+}
+</style>  
