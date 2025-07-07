@@ -2,13 +2,14 @@
 import { defineStore } from 'pinia';
 
 interface Dish {
-  name: string;
-  image: string;
-  selectedSpec: string;
+  dish_id: number;
+  dish_name: string;
+  path: string;
   price: number;
-  monthlySales?: number;
-  description?: string;
+  mon_sale: number;
+  discribe: string;
   count: number;
+  //selectedSpec: string;
 }
 
 export const useCartStore = defineStore('cart', {
@@ -18,7 +19,7 @@ export const useCartStore = defineStore('cart', {
   actions: {
     addToCart(dish: Dish) {
       const existingItem = this.cartItems.find(
-        item => item.name === dish.name && item.selectedSpec === dish.selectedSpec
+        item => item.name === dish.dish_name
       );
       
       if (existingItem) {

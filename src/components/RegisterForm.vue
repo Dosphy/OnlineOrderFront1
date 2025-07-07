@@ -30,7 +30,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { ElMessage } from 'element-plus';
+import { ElMessage,ElLoading } from 'element-plus';
 import { userRegister } from '../api/userApi.js'; // 注意这里导入的是具名导出
 
 export default defineComponent({
@@ -46,7 +46,15 @@ export default defineComponent({
     const handleSubmit = async () => {
       // 调用API并等待响应
       const response = await userRegister(username.value, password.value, phone.value, email.value);
-      if (response.data.code === 200) {
+      const loading = ElLoading.service({
+        lock: true,
+        text: 'Loading',
+        background: 'rgba(0, 0, 0, 0.7)',
+      })
+      setTimeout(() => {
+        loading.close()
+      }, 2000)
+      if (response.code === 200) {
         ElMessage({
           message: '注册成功！',
           type: 'success',

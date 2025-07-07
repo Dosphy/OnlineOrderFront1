@@ -1,29 +1,17 @@
 <template>
   <div class="dishes-list">
-    <div 
-      class="dish-item" 
-      v-for="dish in dishes" 
-      :key="dish.name"
-    >
-      <img :src="dish.image" alt="dish.image" class="dish-img" />
+    <div class="dish-item" v-for="dish in dishes" :key="dish.dish_id">
+      <img :src="dish.path" :alt="dish.dish_name" class="dish-img" />
       <div class="dish-info">
-        <div class="dish-name">{{ dish.name }}</div>
-        <div class="dish-spec">
-          <label>规格：</label>
-          <select v-model="dish.selectedSpec">
-            <option value="小份">小份</option>
-            <option value="中份">中份</option>
-            <option value="大份">大份</option>
-          </select>
-        </div>
+        <div class="dish-name">{{ dish.dish_name }}</div>
         <div class="dish-price">价格：{{ dish.price }}元</div>
-        <div class="dish-monthly-sales">月销量：{{ dish.monthlySales }}单</div>
-        <div class="dish-description">描述：{{ dish.description }}</div>
+        <div class="dish-monthly-sales">月销量：{{ dish.mon_sale }}单</div>
+        <div class="dish-description">描述：{{ dish.discribe }}</div>
         <div class="dish-count">
           数量：{{ dish.count }}
           <button @click="incrementCount(dish)">+</button>
           <button v-if="dish.count > 0" @click="decrementCount(dish)">-</button>
-          <button v-if="dish.count > 0" @click="addToCart(dish)"class="add-to-cart-btn">加入购物车</button>
+          <button v-if="dish.count > 0" @click="addToCart(dish)" class="add-to-cart-btn">加入购物车</button>
         </div>
       </div>
     </div>
@@ -31,56 +19,81 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from 'vue';
+import { defineComponent, reactive, onMounted } from 'vue';
 import { useCartStore } from '../stores/cart';
+import { getGoodsInfo } from '../api/goodsApi.js';
+import { ElMessage } from 'element-plus';
+
+interface Dish {
+  dish_id: number;
+  dish_name: string;
+  path: string;
+  price: number;
+  mon_sale: number;
+  discribe: string;
+  count: number;
+  //selectedSpec: string;
+}
 
 export default defineComponent({
-setup() {
+  setup() {
     const cartStore = useCartStore();
-    
-    const dishes = reactive([
-      {
-        name: '排骨焖饭',
-        image: '/排骨焖饭.jpg', // public 下的资源可直接这样引用
-        selectedSpec: '小份',
-        price: 20,
-        monthlySales: 80,
-        description: '排骨软烂入味，米饭吸收排骨香气',
-        count: 0
-      },
-      {
-        name: '冷泡汁小龙虾',
-        image: '/冷泡汁小龙虾.jpg',
-        selectedSpec: '小份',
-        price: 35,
-        monthlySales: 120,
-        description: '独特冷泡汁，小龙虾鲜嫩爽口',
-        count: 0
-      }
-    ]);
 
-    const incrementCount = (dish: any) => {
+    const dishes = reactive<Dish[]>([]);
+
+    const getDishes = async () => {
+      const response = await getGoodsInfo();
+      if (response.code === 400) {
+        // 初始化菜品数据，添加count和selectedSpec字段
+        response.data.forEach((dish: any) => {
+          dishes.push({
+            ...dish,
+            count: 0,
+            //selectedSpec: parseScales(dish.dish_scale)[0] // 默认选择第一个规格
+          });
+        });
+      } else {
+        ElMessage({
+          message: '获取菜单信息失败！',
+          type: 'error',
+        });
+      }
+    }
+
+    // 解析规格字符串，假设dish_scale格式为"小份/中份/大份"
+    // const parseScales = (scaleStr: string): string[] => {
+    //   return scaleStr.split('/').map(s => s.trim());
+    // };
+
+    const incrementCount = (dish: Dish) => {
       dish.count++;
     };
 
-    const decrementCount = (dish: any) => {
+    const decrementCount = (dish: Dish) => {
       if (dish.count > 0) {
         dish.count--;
       }
     };
 
-    const addToCart = (dish: any) => {
+    const addToCart = (dish: Dish) => {
       if (dish.count > 0) {
-        cartStore.addToCart({ ...dish });
+        cartStore.addToCart({
+          ...dish,
+          //selectedSpec: dish.selectedSpec // 包含选择的规格
+        });
         dish.count = 0; // 重置数量
       }
     };
+
+    onMounted(() => {
+      getDishes();
+    });
 
     return {
       dishes,
       incrementCount,
       decrementCount,
-      addToCart
+      addToCart,
     };
   }
 });
@@ -93,6 +106,7 @@ setup() {
   justify-content: space-around;
   padding: 20px;
 }
+
 .dish-item {
   width: 45%;
   margin-bottom: 20px;
@@ -101,19 +115,23 @@ setup() {
   padding: 10px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
+
 .dish-img {
   width: 50%;
   border-radius: 4px;
   margin-bottom: 5px;
 }
+
 .dish-info {
   text-align: left;
 }
+
 .dish-name {
   font-size: 1.2rem;
   font-weight: bold;
   margin-bottom: 5px;
 }
+
 .dish-spec,
 .dish-price,
 .dish-monthly-sales,
@@ -121,6 +139,7 @@ setup() {
 .dish-count {
   margin-bottom: 5px;
 }
+
 .dish-count button {
   margin-left: 10px;
   padding: 5px 10px;
@@ -130,6 +149,7 @@ setup() {
   border-radius: 4px;
   cursor: pointer;
 }
+
 .dish-count button:hover {
   background-color: #0056b3;
 }

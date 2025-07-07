@@ -4,11 +4,11 @@
     <form @submit.prevent="handleSubmit" class="login-form">
       <div class="form-group">
         <label for="username">管理员账号</label>
-        <input type="text" id="username" v-model="username"/>
+        <input type="text" id="username" v-model="username" />
       </div>
       <div class="form-group">
         <label for="password">管理员密码</label>
-        <input type="password" id="password" v-model="password"/>
+        <input type="password" id="password" v-model="password" />
       </div>
       <button type="submit">登录</button>
     </form>
@@ -18,8 +18,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { ElMessage } from 'element-plus';
-import { adminLogin } from '../api/adminApi.js'; 
+import { ElMessage,ElLoading } from 'element-plus';
+import { adminLogin } from '../api/adminApi.js';
 
 export default defineComponent({
   name: 'AdminLogin',
@@ -27,26 +27,28 @@ export default defineComponent({
     const router = useRouter();
     const username = ref('');
     const password = ref('');
-    
+
     const handleSubmit = async () => {
-      try {
-        // 调用API并等待响应
-        const response = await adminLogin(username.value, password.value);
-      
+      // 调用API并等待响应
+      const response = await adminLogin(username.value, password.value);
+      const loading = ElLoading.service({
+        lock: true,
+        text: 'Loading',
+        background: 'rgba(0, 0, 0, 0.7)',
+      })
+      setTimeout(() => {
+        loading.close()
+      }, 2000)
+      if (response.code === 500) {
         ElMessage({
           message: '登录成功！',
           type: 'success',
         });
-        
+
         // 跳转到管理员首页
         router.push('/admin/prime');
-      } catch (error) {
-        console.error('登录失败:', error);
-        if (error.response.data === '用户名或密码错误') {
-          ElMessage.error('用户名或密码错误');
-        } else {
-          ElMessage.error('登录失败: ' + (error.response?.data?.message || error.message));
-        }
+      } else {
+        ElMessage.error('用户名或密码错误');
       }
     };
 
@@ -62,15 +64,20 @@ export default defineComponent({
 <style scoped>
 /* 背景图样式 */
 .login-container {
-  height: 90vh; /* 视口高度 */
+  height: 90vh;
+  /* 视口高度 */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-image: url('admin.jpg'); /* 引用背景图片 */
-  background-size: cover; /* 背景图片覆盖整个容器 */
-  background-position: center; /* 背景图片居中 */
-  background-repeat: no-repeat; /* 背景图片不重复 */
+  background-image: url('admin.jpg');
+  /* 引用背景图片 */
+  background-size: cover;
+  /* 背景图片覆盖整个容器 */
+  background-position: center;
+  /* 背景图片居中 */
+  background-repeat: no-repeat;
+  /* 背景图片不重复 */
   padding: 20px;
 }
 

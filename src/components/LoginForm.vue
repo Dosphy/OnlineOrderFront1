@@ -19,7 +19,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { ElMessage } from 'element-plus';
+import { ElMessage,ElLoading } from 'element-plus';
 import { userLogin } from '../api/userApi.js';
 
 export default defineComponent({
@@ -31,9 +31,16 @@ export default defineComponent({
 
     const handleSubmit = async () => {
       // 调用API并等待响应
-      const response = await userLogin(username.value, password.value,);
-      console.log(response.data)
-      if (response.data.code === 100) {
+      const response = await userLogin(username.value, password.value);
+      const loading = ElLoading.service({
+        lock: true,
+        text: 'Loading',
+        background: 'rgba(0, 0, 0, 0.7)',
+      })
+      setTimeout(() => {
+        loading.close()
+      }, 2000)
+      if (response.code === 100) {
         ElMessage({
           message: '登录成功！',
           type: 'success',
