@@ -14,25 +14,23 @@ export const userLogin = async (username, password) => { //成功返回100
       'Content-Type': 'application/json'
     }
   });
-  console.log(response.data)
+  console.log(response)
   return response.data;
 };
 
 //用户注册
 export const userRegister = async (username, password, email, phone) => { //成功返回200
   const response = await axios.post(`${API_BASE_URL}/userRegister`, {
-    params: {  
       username,
       password,
       email,
       phone
-    }
   }, {
     headers: {
       'Content-Type': 'application/json'
     }
   });
-  console.log(response.data)
+  console.log(response)
   return response.data;
 };
 
