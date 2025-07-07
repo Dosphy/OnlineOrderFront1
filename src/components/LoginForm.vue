@@ -38,6 +38,7 @@ export default defineComponent({
       // 调用API并等待响应
       const response = await userLogin(username.value, password.value);
       if (response.code === 100) {
+        localStorage.setItem("username", username.value);
         ElMessage({
           message: '登录成功！',
           type: 'success',

@@ -68,26 +68,39 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from 'vue';
+import { defineComponent, reactive, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
+import {getAllUserInfo} from '../api/adminApi.js'
 
 export default defineComponent({
   setup() {
-    const users = reactive([
-      { username: '小小怪', email: 'qwer123456@qq.com', phone: '13800138000' },
-      { username: '大大怪', email: 'dada@example.com', phone: '13900139000' },
-      { username: '用户3', email: 'user3@example.com', phone: '13700137000' }
-    ]);
+    const users = reactive([]); // 初始化用户数据为空数组
 
+    // 获取所有用户信息
+    const fetchUsers = async () => {
+      try {
+        const data = await getAllUserInfo(); // 调用 adminapi.js 中的 getAllUserInfo 方法
+        users.splice(0, users.length, ...data); // 更新用户数据
+      } catch (error) {
+        ElMessage.error('获取用户信息失败');
+        console.error('获取用户信息失败:', error);
+      }
+    };
+
+    // 编辑用户
     const editUser = (user: any) => {
       ElMessage.success('编辑成功');
       console.log('编辑用户:', user);
     };
 
+    // 删除用户
     const deleteUser = (user: any) => {
       ElMessage.success('删除成功');
       console.log('删除用户:', user);
     };
+
+    // 在组件挂载时获取用户信息
+    onMounted(fetchUsers);
 
     return { users, editUser, deleteUser };
   }

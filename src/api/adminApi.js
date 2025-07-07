@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:8080/adminControl';
+const API_USER_URL = 'http://localhost:8080/userControl';
 
 //管理员登录
 export const adminLogin = async (username, password) => { //成功返回500
@@ -20,14 +21,23 @@ export const adminLogin = async (username, password) => { //成功返回500
 };
 
 //获取所有用户信息
-export const getAllUserInfo = async () => { //成功返回600
-  const response = await axios.get(`${API_BASE_URL}/getAllUserInfo`, {}, {
-    headers: {
-      'Content-Type': 'application/json'
+export const getAllUserInfo = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/getAllUserInfo`, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    console.log(response.data);
+    if (response.data.code === 600) {
+      return response.data.data; // 返回用户信息列表
+    } else {
+      throw new Error(response.data.message); // 抛出错误消息
     }
-  });
-  console.log(response.data)
-  return response.data
+  } catch (error) {
+    console.error('获取用户信息失败:', error);
+    throw error; // 将错误抛出，让调用者处理
+  }
 };
 
 //更新商品信息
@@ -65,5 +75,23 @@ export const deleteGoods = async (dish_id) => { //成功返回800
   });
   console.log(response.data)
   return response.data
+};
+
+//更新用户信息
+export const updateUserInfo = async (username, password, email, phone) => { //成功返回300
+  const response = await axios.post(`${API_USER_URL}/updateUserInfo`, {
+    params: {
+      username,
+      password,
+      email,
+      phone
+    }
+  }, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  console.log(response.data)
+  return response.data;
 };
 
