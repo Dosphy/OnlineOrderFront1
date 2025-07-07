@@ -19,6 +19,7 @@
 import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
+import { adminLogin } from '../api/adminApi.js'; 
 
 export default defineComponent({
   name: 'AdminLogin',
@@ -26,19 +27,8 @@ export default defineComponent({
     const router = useRouter();
     const username = ref('');
     const password = ref('');
-
-    const handleSubmit = () => {
-      
-        ElMessage({
-          message: '登录成功！',
-          type: 'success',
-        });
-        
-        // 跳转到管理员首页
-        router.push('/admin/prime');
-      
-    };
-    /*const handleSubmit = async () => {
+    
+    const handleSubmit = async () => {
       try {
         // 调用API并等待响应
         const response = await adminLogin(username.value, password.value);
@@ -58,7 +48,7 @@ export default defineComponent({
           ElMessage.error('登录失败: ' + (error.response?.data?.message || error.message));
         }
       }
-    };*/
+    };
 
     return {
       username,

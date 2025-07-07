@@ -29,7 +29,11 @@ export default defineComponent({
     const username = ref('');
     const password = ref('');
 
-    const handleSubmit = () =>{
+    const handleSubmit = async () => {
+      try {
+        // 调用API并等待响应
+        const response = await userLogin(username.value, password.value);
+      
         ElMessage({
           message: '登录成功！',
           type: 'success',
@@ -37,28 +41,15 @@ export default defineComponent({
         
         // 跳转到首页
         router.push('/user/home');
-    }
-    // const handleSubmit = async () => {
-    //   try {
-    //     // 调用API并等待响应
-    //     const response = await userLogin(username.value, password.value);
-      
-    //     ElMessage({
-    //       message: '登录成功！',
-    //       type: 'success',
-    //     });
-        
-    //     // 跳转到首页
-    //     router.push('/user/home');
-    //   } catch (error) {
-    //     console.error('登录失败:', error);
-    //     if (error.response.data === '用户名或密码错误') {
-    //       ElMessage.error('用户名或密码错误');
-    //     } else {
-    //       ElMessage.error('登录失败: ' + (error.response?.data?.message || error.message));
-    //     }
-    //   }
-    // };
+      } catch (error) {
+        console.error('登录失败:', error);
+        if (error.response.data === '用户名或密码错误') {
+          ElMessage.error('用户名或密码错误');
+        } else {
+          ElMessage.error('登录失败: ' + (error.response?.data?.message || error.message));
+        }
+      }
+    };
 
     const goToRegister = () => {
       router.push('/register');
