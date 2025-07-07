@@ -12,11 +12,11 @@
       </div>
       <div class="form-group">
         <label for="phone">电话</label>
-        <input type="text" id="username" v-model="username" required/>
+        <input type="text" id="phone" v-model="phone" required/>
       </div>
       <div class="form-group">
         <label for="email">邮箱</label>
-        <input type="text" id="username" v-model="username" required/>
+        <input type="text" id="email" v-model="email" required/>
       </div>
       <button type="submit">注册</button>
       <div class="login-prompt">
@@ -39,37 +39,31 @@ export default defineComponent({
     const router = useRouter();
     const username = ref('');
     const password = ref('');
+    const phone = ref('');
+    const email = ref('');
 
-    const handleSubmit = () => {
-      ElMessage({
+
+    const handleSubmit = async () => {
+      try {
+        // 调用API并等待响应
+        const response = await userRegister(username.value, password.value,phone.value,email.value);
+
+        ElMessage({
           message: '注册成功！',
           type: 'success',
         });
+        
         // 跳转到登录页面
         router.push('/');
+      } catch (error) {
+        console.error('注册失败:', error);
+        if (error.message === 'Request failed with status code 500') {
+          ElMessage.error('用户名已存在');
+        } else {
+          ElMessage.error('注册失败: ' + (error.response?.data?.message || error.message));
+        }
+      }
     };
-
-    // const handleSubmit = async () => {
-    //   try {
-    //     // 调用API并等待响应
-    //     const response = await userRegister(username.value, password.value);
-
-    //     ElMessage({
-    //       message: '注册成功！',
-    //       type: 'success',
-    //     });
-        
-    //     // 跳转到登录页面
-    //     router.push('/');
-    //   } catch (error) {
-    //     console.error('注册失败:', error);
-    //     if (error.message === 'Request failed with status code 500') {
-    //       ElMessage.error('用户名已存在');
-    //     } else {
-    //       ElMessage.error('注册失败: ' + (error.response?.data?.message || error.message));
-    //     }
-    //   }
-    // };
 
     const goToLogin = () => {
       router.push('/');
@@ -78,6 +72,8 @@ export default defineComponent({
     return {
       username,
       password,
+      phone,
+      email,
       handleSubmit,
       goToLogin,
     };
