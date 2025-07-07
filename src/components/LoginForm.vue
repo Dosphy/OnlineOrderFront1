@@ -4,11 +4,11 @@
     <form @submit.prevent="handleSubmit" class="login-form">
       <div class="form-group">
         <label for="username">账号</label>
-        <input type="text" id="username" v-model="username"/>
+        <input type="text" id="username" v-model="username" required/>
       </div>
       <div class="form-group">
         <label for="password">密码</label>
-        <input type="password" id="password" v-model="password"/>
+        <input type="password" id="password" v-model="password" required/>
       </div>
       <button type="submit">登录</button>
       <button type="button" @click="goToRegister" class="register-button">注册</button>
@@ -20,7 +20,7 @@
 import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
-import { userLogin } from '../api/userApi.js'; 
+import { userLogin } from '../api/userApi.js';
 
 export default defineComponent({
   name: 'LoginComponent',
@@ -30,24 +30,18 @@ export default defineComponent({
     const password = ref('');
 
     const handleSubmit = async () => {
-      try {
-        // 调用API并等待响应
-        const response = await userLogin(username.value, password.value);
-      
+      // 调用API并等待响应
+      const response = await userLogin(username.value, password.value,);
+      console.log(response.data)
+      if (response.data.code === 100) {
         ElMessage({
           message: '登录成功！',
           type: 'success',
         });
-        
         // 跳转到首页
         router.push('/user/home');
-      } catch (error) {
-        console.error('登录失败:', error);
-        if (error.response.data === '用户名或密码错误') {
-          ElMessage.error('用户名或密码错误');
-        } else {
-          ElMessage.error('登录失败: ' + (error.response?.data?.message || error.message));
-        }
+      } else {
+        ElMessage.error('用户名或密码错误');
       }
     };
 
@@ -68,15 +62,20 @@ export default defineComponent({
 <style scoped>
 /* 背景图样式 */
 .login-container {
-  height: 90vh; /* 视口高度 */
+  height: 90vh;
+  /* 视口高度 */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-image: url('beijing.jpg'); /* 引用背景图片 */
-  background-size: cover; /* 背景图片覆盖整个容器 */
-  background-position: center; /* 背景图片居中 */
-  background-repeat: no-repeat; /* 背景图片不重复 */
+  background-image: url('beijing.jpg');
+  /* 引用背景图片 */
+  background-size: cover;
+  /* 背景图片覆盖整个容器 */
+  background-position: center;
+  /* 背景图片居中 */
+  background-repeat: no-repeat;
+  /* 背景图片不重复 */
   padding: 20px;
 }
 

@@ -4,25 +4,25 @@
     <form @submit.prevent="handleSubmit" class="register-form">
       <div class="form-group">
         <label for="username">账号</label>
-        <input type="text" id="username" v-model="username" required/>
+        <input type="text" id="username" v-model="username" required />
       </div>
       <div class="form-group">
         <label for="password">密码</label>
-        <input type="password" id="password" v-model="password" required/>
+        <input type="password" id="password" v-model="password" required />
       </div>
       <div class="form-group">
         <label for="phone">电话</label>
-        <input type="text" id="phone" v-model="phone" required/>
+        <input type="text" id="phone" v-model="phone" required />
       </div>
       <div class="form-group">
         <label for="email">邮箱</label>
-        <input type="text" id="email" v-model="email" required/>
+        <input type="text" id="email" v-model="email" required />
       </div>
       <button type="submit">注册</button>
       <div class="login-prompt">
-        是否返回登陆？ <router-link to="/">返回</router-link>
+        是否返回登录？ <router-link to="/">返回</router-link>
       </div>
-      
+
     </form>
   </div>
 </template>
@@ -44,24 +44,18 @@ export default defineComponent({
 
 
     const handleSubmit = async () => {
-      try {
-        // 调用API并等待响应
-        const response = await userRegister(username.value, password.value,phone.value,email.value);
-
+      // 调用API并等待响应
+      const response = await userRegister(username.value, password.value, phone.value, email.value);
+      if (response.data.code === 200) {
         ElMessage({
           message: '注册成功！',
           type: 'success',
         });
-        
+
         // 跳转到登录页面
         router.push('/');
-      } catch (error) {
-        console.error('注册失败:', error);
-        if (error.message === 'Request failed with status code 500') {
-          ElMessage.error('用户名已存在');
-        } else {
-          ElMessage.error('注册失败: ' + (error.response?.data?.message || error.message));
-        }
+      } else{
+        ElMessage.error('用户名已存在');
       }
     };
 
@@ -84,15 +78,20 @@ export default defineComponent({
 <style scoped>
 /* 背景图样式 */
 .register-container {
-  height: 100vh; /* 视口高度 */
+  height: 100vh;
+  /* 视口高度 */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-image: url('beijing.jpg'); /* 引用背景图片 */
-  background-size: cover; /* 背景图片覆盖整个容器 */
-  background-position: center; /* 背景图片居中 */
-  background-repeat: no-repeat; /* 背景图片不重复 */
+  background-image: url('beijing.jpg');
+  /* 引用背景图片 */
+  background-size: cover;
+  /* 背景图片覆盖整个容器 */
+  background-position: center;
+  /* 背景图片居中 */
+  background-repeat: no-repeat;
+  /* 背景图片不重复 */
   padding: 20px;
 }
 
