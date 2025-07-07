@@ -10,6 +10,14 @@
         <label for="password">密码</label>
         <input type="password" id="password" v-model="password" required/>
       </div>
+      <div class="form-group">
+        <label for="phone">电话</label>
+        <input type="text" id="username" v-model="username" required/>
+      </div>
+      <div class="form-group">
+        <label for="email">邮箱</label>
+        <input type="text" id="username" v-model="username" required/>
+      </div>
       <button type="submit">注册</button>
       <div class="login-prompt">
         是否返回登陆？ <router-link to="/">返回</router-link>
