@@ -18,7 +18,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { ElMessage,ElLoading } from 'element-plus';
+import { ElMessage, ElLoading } from 'element-plus';
 import { adminLogin } from '../api/adminApi.js';
 
 export default defineComponent({
@@ -29,26 +29,24 @@ export default defineComponent({
     const password = ref('');
 
     const handleSubmit = async () => {
-      // 调用API并等待响应
-      const response = await adminLogin(username.value, password.value);
       const loading = ElLoading.service({
         lock: true,
         text: 'Loading',
         background: 'rgba(0, 0, 0, 0.7)',
-      })
-      setTimeout(() => {
-        loading.close()
-      }, 2000)
+      });
+      // 调用API并等待响应
+      const response = await adminLogin(username.value, password.value);
       if (response.code === 500) {
         ElMessage({
           message: '登录成功！',
           type: 'success',
         });
-
+        loading.close();
         // 跳转到管理员首页
         router.push('/admin/prime');
       } else {
         ElMessage.error('用户名或密码错误');
+        loading.close();
       }
     };
 

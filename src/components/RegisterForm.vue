@@ -44,25 +44,23 @@ export default defineComponent({
 
 
     const handleSubmit = async () => {
-      // 调用API并等待响应
-      const response = await userRegister(username.value, password.value, phone.value, email.value);
       const loading = ElLoading.service({
         lock: true,
         text: 'Loading',
         background: 'rgba(0, 0, 0, 0.7)',
       })
-      setTimeout(() => {
-        loading.close()
-      }, 2000)
+      // 调用API并等待响应
+      const response = await userRegister(username.value, password.value, phone.value, email.value);
       if (response.code === 200) {
         ElMessage({
           message: '注册成功！',
           type: 'success',
         });
-
+        loading.close();
         // 跳转到登录页面
         router.push('/');
       } else{
+        loading.close();
         ElMessage.error('用户名已存在');
       }
     };

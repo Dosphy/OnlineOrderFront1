@@ -30,24 +30,23 @@ export default defineComponent({
     const password = ref('');
 
     const handleSubmit = async () => {
-      // 调用API并等待响应
-      const response = await userLogin(username.value, password.value);
       const loading = ElLoading.service({
         lock: true,
         text: 'Loading',
         background: 'rgba(0, 0, 0, 0.7)',
-      })
-      setTimeout(() => {
-        loading.close()
-      }, 2000)
+      });
+      // 调用API并等待响应
+      const response = await userLogin(username.value, password.value);
       if (response.code === 100) {
         ElMessage({
           message: '登录成功！',
           type: 'success',
         });
+        loading.close();
         // 跳转到首页
         router.push('/user/home');
       } else {
+        loading.close();
         ElMessage.error('用户名或密码错误');
       }
     };

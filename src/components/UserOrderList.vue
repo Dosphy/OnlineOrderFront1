@@ -1,18 +1,16 @@
 <template>
-  <div class="user-order-list">
-    <h2>历史订单信息</h2>
-    <div class="order-item" v-for="order in orders" :key="order.id">
-      <div class="order-header">
-        <span>订单号：{{ order.id }}</span>
-        <span>状态：{{ order.status }}</span>
-      </div>
-      <div class="order-detail">
-        <p>菜品名称：{{ order.foodName }}</p>
-        <p>规格：{{ order.spec }}</p>
-        <p>价格：{{ order.price }}元</p>
-        <p>月销量：{{ order.monthlySales }}单</p>
-        <p>描述：{{ order.description }}</p>
-      </div>
+  <div class="user-order-container">
+    <div class="user-order-list">
+      <h2 class="order-title">历史订单信息</h2>
+      <el-table :data="orders" stripe style="width: 100%">
+        <el-table-column prop="id" label="订单号" width="180" />
+        <el-table-column prop="status" label="状态" width="180" />
+        <el-table-column prop="foodName" label="菜品名称" />
+        <el-table-column prop="spec" label="规格" width="120" />
+        <el-table-column prop="price" label="价格(元)" width="120" />
+        <el-table-column prop="monthlySales" label="月销量" width="120" />
+        <el-table-column prop="description" label="描述" />
+      </el-table>
     </div>
   </div>
 </template>
@@ -59,31 +57,44 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.user-order-list {
-  max-width: 600px;
-  margin: 0 auto;
+.user-order-container {
   padding: 20px;
-  background-color: #fff;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.user-order-list {
+  background: #fff;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
-h2 {
-  text-align: center;
+
+.order-title {
+  color: #333;
   margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
 }
-.order-item {
-  border: 1px solid #eee;
-  border-radius: 4px;
-  padding: 15px;
-  margin-bottom: 15px;
+
+/* 表格样式调整 */
+.el-table {
+  margin-top: 15px;
 }
-.order-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
+
+.el-table::before {
+  height: 0; /* 移除表格底部边框 */
+}
+
+/* 表头样式 */
+.el-table th {
+  background-color: #f5f7fa;
+  color: #333;
   font-weight: bold;
 }
-.order-detail p {
-  margin: 5px 0;
+
+/* 表格行悬停效果 */
+.el-table .el-table__body tr:hover>td {
+  background-color: #f5f7fa !important;
 }
 </style>
