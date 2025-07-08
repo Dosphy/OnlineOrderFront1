@@ -74,6 +74,7 @@ export default defineComponent({
           ...dish,
         });
         dish.count = 0;
+        ElMessage.success('加入购物车成功!');
       }
     };
 

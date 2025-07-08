@@ -77,6 +77,7 @@ export const getHistoryOrder = async (username) => {
         'Content-Type': 'application/json',
       },
     });
+    console.log("历史订单信息",response.data)
     return response.data; // 返回后端响应的数据
   } catch (error) {
     console.error('获取历史订单失败:', error);

@@ -6,11 +6,7 @@
     </div>
     <div v-else>
       <div class="cart-items">
-        <div 
-          class="cart-item" 
-          v-for="(item, index) in cartItems" 
-          :key="item.dish_name"
-        >
+        <div class="cart-item" v-for="(item, index) in cartItems" :key="item.dish_name">
           <img :src="item.path" alt="item.name" class="cart-item-img" />
           <div class="cart-item-info">
             <div class="cart-item-name">{{ item.dish_name }}</div>
@@ -35,9 +31,8 @@
 
 <script lang="ts">
 import { defineComponent, computed, onMounted } from 'vue';
-import { useCartStore } from '../stores/cart'; 
-import { carouselItemProps, ElMessage,ElMessageBox } from 'element-plus';
-import type { Action } from 'element-plus'
+import { useCartStore } from '../stores/cart';
+import { ElMessage, ElMessageBox } from 'element-plus';
 import { sendOreder } from '../api/userApi.js';
 import { useRouter } from 'vue-router';
 
@@ -69,36 +64,97 @@ export default defineComponent({
     };
 
     // 结算
-   const checkout = async () => {
-  if (cartStore.cartItems.length === 0) {
-    ElMessage.error('购物车为空，无法结算！');
-    return;
-  }
- const username = localStorage.getItem("username");
-  // 构造符合后端期望的订单数据
-  const orderData = {
-    dishName: cartStore.cartItems[0].dish_name, // 假设只发送第一个菜品的名称
-    totalPrice: totalAmount.value, // 总金额
-    number: cartStore.cartItems[0].count, // 假设只发送第一个菜品的数量
-    username: username, // 假设用户名为testUser
-    orderTime: new Date().toISOString(), // 当前时间，转换为 ISO 8601 格式
-    status: 0 // 假设订单状态为0
-  };
+    const checkout = async () => {
+      if (cartStore.cartItems.length === 0) {
+        ElMessage.error('购物车为空，无法结算！');
+        return;
+      }
 
-  console.log("前端构造的订单数据：", orderData); // 打印订单数据
+      try {
+        const username = localStorage.getItem("username");
+        if (!username) {
+          ElMessage.error('用户未登录');
+          router.push('/login');
+          return;
+        }
 
+        // 1. 合并相同商品
+        const mergedItems = cartStore.cartItems.reduce((acc, item) => {
+          const existing = acc.find(i => i.dish_name === item.dish_name);
+          if (existing) {
+            existing.count += item.count;
+          } else {
+            acc.push({ ...item });
+          }
+          return acc;
+        }, []);
 
-   
-    const response = await sendOreder(orderData);
-    if (response.code === 1300) { // 假设后端返回的代码 300 表示成功
-      ElMessage.success('订单提交成功！总金额：' + totalAmount.value + '元');
-      cartStore.clearCart(); // 清空购物车
-      window.location.reload();
+        // 2. 确认订单
+        const confirmResult = await ElMessageBox.confirm(
+          `确认购买 ${mergedItems.length} 种商品，总金额 ${totalAmount.value} 元？`,
+          '确认订单',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }
+        );
 
-    } else {
-      ElMessage.error(response.message || '订单提交失败！');
-    }
-};
+        // 3. 为每种商品创建独立订单
+        // const orderPromises = mergedItems.map(item => {
+        //   const orderData = {
+        //     dishName: item.dish_name,
+        //     totalPrice: item.price * item.count, // 单种商品总价
+        //     number: item.count,                 // 单种商品数量
+        //     username: username,
+        //     orderTime: null, // 自动生成时间可不传
+        //     status: 0
+        //   };
+        //   return sendOreder(orderData);
+        // });
+
+        // 4. 发送所有订单
+        //   const results = await Promise.all(orderPromises);
+        //   const allSuccess = results.every(res => res.code === 1300);
+
+        //   if (allSuccess) {
+        //     ElMessage.success(`成功提交 ${mergedItems.length} 个订单！`);
+        //     cartStore.clearCart();
+        //     window.location.reload()
+        //   } else {
+        //     const errorMessages = results
+        //       .filter(res => res.code !== 1300)
+        //       .map(res => res.message)
+        //       .join('; ');
+        //     ElMessage.error(`部分订单提交失败: ${errorMessages}`);
+        //   }
+        // } catch (error) {
+        //   if (error !== 'cancel') {
+        //     ElMessage.error('下单过程中出错: ' + (error.message || error));
+        //   }
+        // }
+        // 改为单个提交避免部分失败
+        for (const item of mergedItems) {
+          const response = await sendOreder({
+            dishName: item.dish_name,
+            totalPrice: item.price * item.count,
+            number: item.count,
+            username: username,
+            status: 0
+          });
+
+          if (response.code !== 1300) {
+            throw new Error(response.message);
+          }
+        }
+
+        ElMessage.success(`成功提交 ${mergedItems.length} 个订单！`);
+        cartStore.clearCart();
+        window.location.reload()
+      } catch (error) {
+        ElMessage.error("提交失败!");
+      }
+    };
 
     return {
       cartItems: cartStore.cartItems,
