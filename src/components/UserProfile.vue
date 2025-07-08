@@ -53,8 +53,8 @@ export default defineComponent({
 
 .sidebar {
   width: 220px;
-  background: linear-gradient(180deg, #0885fb, #0578e6); /* 渐变背景更立体 */
-  border-right: 1px solid #046ddf;
+  background: linear-gradient(180deg, #8B4513, #A0522D); /* 棕色渐变背景 */
+  border-right: 1px solid #6b3a1d; /* 棕色边框 */
   box-shadow: 2px 0 8px rgba(0,0,0,0.1); /* 侧栏阴影 */
 }
 
@@ -84,11 +84,11 @@ export default defineComponent({
 }
 
 .menu-item.active {
-  background: #e9ecef;
-  color: #0885fb;
+  background: #f0e6d2; /* 棕色背景 */
+  color: #8B4513; /* 棕色文字 */
   font-weight: 600;
   transform: translateX(0);
-  box-shadow: inset 2px 0 0 #ff8c00; /* 左侧高亮线 */
+  box-shadow: inset 2px 0 0 #d2b48c; /* 左侧高亮线 */
 }
 
 .content {
