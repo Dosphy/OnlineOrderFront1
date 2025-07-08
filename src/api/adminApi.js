@@ -42,8 +42,8 @@ export const getAllUserInfo = async () => {
 
 //更新商品信息
 export const updateGoodsInfo = async (dish_id, dish_name, dish_scale, path, price, mon_sale, describe) => { //成功返回700
-  const response = await axios.post(`${API_BASE_URL}/updateGoodsInfo`, { 
-    params: {  
+  const response = await axios.post(`${API_BASE_URL}/updateGoodsInfo`, {
+    params: {
       dish_id,
       dish_name,
       dish_scale,
@@ -53,19 +53,19 @@ export const updateGoodsInfo = async (dish_id, dish_name, dish_scale, path, pric
       describe
     }
   },
-   {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  });
+    {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
   console.log(response.data)
   return response.data
 };
 
 //删除商品信息
 export const deleteGoods = async (dish_id) => { //成功返回800
-  const response = await axios.get(`${API_BASE_URL}/deleteGoods`, { 
-    params: {  
+  const response = await axios.get(`${API_BASE_URL}/deleteGoods`, {
+    params: {
       dish_id
     }
   }, {
@@ -80,11 +80,24 @@ export const deleteGoods = async (dish_id) => { //成功返回800
 //更新用户信息
 export const updateUserInfo = async (username, password, email, phone) => { //成功返回300
   const response = await axios.post(`${API_USER_URL}/updateUserInfo`, {
+    username,
+    password,
+    email,
+    phone
+  }, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  console.log(response.data)
+  return response.data;
+};
+
+//删除用户信息
+export const deleteUser = async (username) => { //成功返回1100
+  const response = await axios.post(`${API_USER_URL}/deleteUser`, {
     params: {
-      username,
-      password,
-      email,
-      phone
+      username
     }
   }, {
     headers: {

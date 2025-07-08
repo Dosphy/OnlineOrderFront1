@@ -2,19 +2,19 @@
   <div class="stock-management">
     <h2>库存管理</h2>
   </div>
-  <el-table :data="stockList" style="width: 100%">
+  <!-- <el-table :data="stockList" style="width: 100%">
       <el-table-column label="材料名称" minwidth="200">
         <template #default="scope">
           <el-popover effect="light" trigger="hover" placement="top" width="auto">
             <template #default>
-              <div>材料名称 {{ scope.row.name }}</div>
-              <div>类型: {{ scope.row.type }}</div>
-              <div>当前库存: {{ scope.row.quantity }}</div>
-              <div>最低库存: {{ scope.row.warningThreshold }}</div>
+              <div>材料名称 {{ scope.row.material }}</div>
+              <div>类型: {{ scope.row.mat_cat }}</div>
+              <div>当前库存: {{ scope.row.mat_num }}</div>
+              <div>最低库存: {{ scope.row.mat_minnum }}</div>
             </template>
             <template #reference>
-              <el-tag :type="scope.row.quantity < scope.row.warningThreshold ? 'danger' : 'success'">
-                {{ scope.row.name }}
+              <el-tag :type="scope.row.mat_num < scope.row.mat_minnum ? 'danger' : 'success'">
+                {{ scope.row.material }}
               </el-tag>
             </template>
           </el-popover>
@@ -23,21 +23,21 @@
       
       <el-table-column label="类型" minwidth="200">
         <template #default="scope">
-          <span>{{ scope.row.type }}</span>
+          <span>{{ scope.row.mat_cat }}</span>
         </template>
       </el-table-column>
       
       <el-table-column label="库存数量" minwidth="200">
         <template #default="scope">
-          <span :class="{ 'warning-text': scope.row.quantity < scope.row.warningThreshold }">
-            {{ scope.row.quantity }}
+          <span :class="{ 'warning-text': scope.row.mat_num < scope.row.mat_minnum }">
+            {{ scope.row.mat_num }}
           </span>
         </template>
       </el-table-column>
 
       <el-table-column label="最低库存" width="200">
         <template #default="scope">
-          <span>{{ scope.row.warningThreshold }}</span>
+          <span>{{ scope.row.mat_minnum }}</span>
         </template>
       </el-table-column>
       
@@ -51,7 +51,7 @@
             补货
           </el-button>
           <el-tag 
-            v-if="scope.row.quantity < scope.row.warningThreshold" 
+            v-if="scope.row.mat_num < scope.row.mat_minnum" 
             type="danger" 
             size="small"
             style="margin-left: 8px"
@@ -60,37 +60,33 @@
           </el-tag>
         </template>
       </el-table-column>
-    </el-table>
+    </el-table> -->
+    <template>
+  <el-table :data="stockList" stripe style="width: 100%">
+    <el-table-column prop="material_id" label="材料id" width="180" />
+    <el-table-column prop="material" label="材料名称" width="180" />
+    <el-table-column prop="mat_cat" label="类型" width="180" />
+    <el-table-column prop="mat_num" label="库存" width="180"/>
+    <el-table-column prop="mat_minnum" label="最低库存" />
+  </el-table>
+</template>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue';
+import { defineComponent, reactive, ref, onMounted, warn } from 'vue';
 import { ElMessage,ElMessageBox } from 'element-plus';
+import { getStock } from '../api/stockApi.js'
 
 export default defineComponent({
   setup() {
-    // 模拟库存数据
-    const stockList = reactive([
-      { 
-        name: '牛肉原料', 
-        type: 'material', 
-        quantity: 50, 
-        warningThreshold: 20 
-      },
-      { 
-        name: '一次性杯子', 
-        type: 'material', 
-        quantity: 100, 
-        warningThreshold: 30 
-      },
-      { 
-        name: '炸鸡原料', 
-        type: 'material', 
-        quantity: 30, 
-        warningThreshold: 15 
-      }
-    ]);
+    const stockList = reactive([]);
 
+    const getStockInfo = async () => {
+      const response = await getStock();
+      stockList.splice(0, stockList.length, ...response.data);
+      console.log("库存信息",stockList)
+    }
+    
     const currentReplenishItem = ref<any>(null);
 
     // 打开补货弹窗
@@ -127,11 +123,14 @@ export default defineComponent({
       } 
     };
 
+    onMounted(getStockInfo)
+
     return {
       stockList,
       currentReplenishItem,
       handleReplenish,
-      confirmReplenish
+      confirmReplenish,
+      getStockInfo
     };
   }
 });

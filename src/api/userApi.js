@@ -85,7 +85,7 @@ export const getHistoryOrder = async (username) => {
 };
 
 //根据人数处理库存
-export const reduceStock = async (number) => { //成功返回300
+export const reduceStock = async (number) => { //成功返回1500
   const response = await axios.post(`${API_BASE_URL}/reduceStock?number=${number}`, {}, {
     headers: {
       'Content-Type': 'application/json'
