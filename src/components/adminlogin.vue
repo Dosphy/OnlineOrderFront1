@@ -68,7 +68,7 @@ export default defineComponent({
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-image: url('admin.jpg');
+  background-image: url('admin1.jpg');
   /* 引用背景图片 */
   background-size: cover;
   /* 背景图片覆盖整个容器 */

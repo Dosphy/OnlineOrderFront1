@@ -52,7 +52,7 @@ export default defineComponent({
 
 .sidebar {
   width: 200px;
-  background-color: #0072f2;
+  background-color: #8B0000; /* 深红色 */
   display: flex;
   flex-direction: column;
 }
@@ -74,8 +74,8 @@ export default defineComponent({
 }
 
 .sidebar > div.active {
-  background-color: #e5e7eb;
-  color: #0072f2;
+  background-color: #A52A2A; /* 稍浅的深红色 */
+  color: #ffffff;
 }
 
 .content {
