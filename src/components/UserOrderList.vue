@@ -3,60 +3,77 @@
     <div class="user-order-list">
       <h2 class="order-title">历史订单信息</h2>
       <el-table :data="orders" stripe style="width: 100%">
-        <el-table-column prop="id" label="订单号" width="180" />
-        <el-table-column prop="status" label="状态" width="180" />
-        <el-table-column prop="foodName" label="菜品名称" />
-        <el-table-column prop="spec" label="规格" width="120" />
-        <el-table-column prop="price" label="价格(元)" width="120" />
-        <el-table-column prop="monthlySales" label="月销量" width="120" />
-        <el-table-column prop="description" label="描述" />
+        <el-table-column prop="order_id" label="订单号" width="180" />
+        <el-table-column prop="dish_name" label="菜品名称" />
+        <el-table-column prop="total_price" label="价格(元)" width="120" />
+        <el-table-column prop="number" label="数量" width="120" />
+        <el-table-column prop="formattedOrderTime" label="下单时间" />
       </el-table>
+      <div v-if="orders.length === 0" class="no-order">
+        暂无订单记录
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from 'vue';
+import { defineComponent, reactive, onMounted } from 'vue';
+import { getHistoryOrder } from '../api/userApi';
 
 export default defineComponent({
   setup() {
-    const orders = reactive([
-      {
-        id: 'ORDER001',
-        status: '已完成',
-        foodName: '经典牛肉面',
-        spec: '大份',
-        price: 25,
-        monthlySales: 100,
-        description: '精选牛肉，浓郁汤汁，搭配手工面条'
-      },
-      {
-        id: 'ORDER002',
-        status: '制作中',
-        foodName: '香辣炸鸡汉堡',
-        spec: '单人份',
-        price: 18,
-        monthlySales: 150,
-        description: '外酥里嫩的炸鸡，搭配新鲜蔬菜和特制酱料'
-      },
-      {
-        id: 'ORDER003',
-        status: '待支付',
-        foodName: '水果沙拉套餐',
-        spec: '标准份',
-        price: 22,
-        monthlySales: 80,
-        description: '多种新鲜水果搭配，健康又美味'
-      }
-    ]);
-    return {
-      orders
+    const orders = reactive<any[]>([]);
+    const username = localStorage.getItem('username');
+
+    // 补零函数
+    const padZero = (num: number): string => {
+      return num < 10 ? `0${num}` : `${num}`;
     };
-  }
+
+    // 时间戳转换函数
+    const formatTimestamp = (timestamp: number) => {
+      const date = new Date(timestamp);
+      const year = date.getFullYear();
+      const month = padZero(date.getMonth() + 1);
+      const day = padZero(date.getDate());
+      const hours = padZero(date.getHours());
+      const minutes = padZero(date.getMinutes());
+      const seconds = padZero(date.getSeconds());
+      
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    };
+
+    const fetchOrders = async () => {
+      try {
+        const response = await getHistoryOrder(username);
+        if (response.code === 1000) {
+          orders.length = 0;
+          const formattedOrders = response.data.map((order: any) => ({
+            ...order,
+            formattedOrderTime: formatTimestamp(order.orderTime)
+          }));
+          orders.push(...formattedOrders);
+        } else {
+          console.error('获取订单信息失败:', response.message);
+        }
+      } catch (error) {
+        console.error('请求订单信息失败:', error);
+      }
+    };
+
+    onMounted(() => {
+      fetchOrders();
+    });
+
+    return {
+      orders,
+    };
+  },
 });
 </script>
 
 <style scoped>
+/* 样式保持不变 */
 .user-order-container {
   padding: 20px;
   max-width: 1200px;
@@ -77,24 +94,27 @@ export default defineComponent({
   border-bottom: 1px solid #eee;
 }
 
-/* 表格样式调整 */
 .el-table {
   margin-top: 15px;
 }
 
 .el-table::before {
-  height: 0; /* 移除表格底部边框 */
+  height: 0;
 }
 
-/* 表头样式 */
 .el-table th {
   background-color: #f5f7fa;
   color: #333;
   font-weight: bold;
 }
 
-/* 表格行悬停效果 */
 .el-table .el-table__body tr:hover>td {
   background-color: #f5f7fa !important;
+}
+
+.no-order {
+  text-align: center;
+  padding: 20px;
+  color: #666;
 }
 </style>

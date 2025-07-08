@@ -65,3 +65,21 @@ export const updateUserInfo = async (username, password, email, phone) => { //�
   console.log(response.data)
   return response.data;
 };
+
+// 获取用户历史订单
+export const getHistoryOrder = async (username) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/getHistoryOrder`, {
+      params: {
+        username,
+      },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data; // 返回后端响应的数据
+  } catch (error) {
+    console.error('获取历史订单失败:', error);
+    return { code: 1001, message: '获取历史订单失败' }; // 假设 1001 是获取失败的代码
+  }
+};
