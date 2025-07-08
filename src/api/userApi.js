@@ -65,3 +65,14 @@ export const updateUserInfo = async (username, password, email, phone) => { //�
   console.log(response.data)
   return response.data;
 };
+
+//根据人数处理库存
+export const reduceStock = async (number) => { //成功返回300
+  const response = await axios.post(`${API_BASE_URL}/reduceStock?number=${number}`, {}, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  console.log(response.data)
+  return response.data;
+};
