@@ -150,7 +150,7 @@ export default defineComponent({
 
     // 删除用户
     const deleteUserInfo = async (user: any) => {
-      const response = deleteUser(user.username)
+      const response = await deleteUser(user.username)
       console.log('删除用户:', user);
       if(response.code === 1100){
         ElMessage.success('删除成功!');

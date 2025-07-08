@@ -32,7 +32,6 @@ interface Dish {
   mon_sale: number;
   discribe: string;
   count: number;
-  //selectedSpec: string;
 }
 
 export default defineComponent({
@@ -49,7 +48,6 @@ export default defineComponent({
           dishes.push({
             ...dish,
             count: 0,
-            //selectedSpec: parseScales(dish.dish_scale)[0] // 默认选择第一个规格
           });
         });
       } else {
@@ -59,11 +57,6 @@ export default defineComponent({
         });
       }
     }
-
-    // 解析规格字符串，假设dish_scale格式为"小份/中份/大份"
-    // const parseScales = (scaleStr: string): string[] => {
-    //   return scaleStr.split('/').map(s => s.trim());
-    // };
 
     const incrementCount = (dish: Dish) => {
       dish.count++;
@@ -79,9 +72,8 @@ export default defineComponent({
       if (dish.count > 0) {
         cartStore.addToCart({
           ...dish,
-          //selectedSpec: dish.selectedSpec // 包含选择的规格
         });
-        dish.count = 0; // 重置数量
+        dish.count = 0;
       }
     };
 

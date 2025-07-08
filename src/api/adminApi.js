@@ -95,7 +95,7 @@ export const updateUserInfo = async (username, password, email, phone) => { //�
 
 //删除用户信息
 export const deleteUser = async (username) => { //成功返回1100
-  const response = await axios.post(`${API_USER_URL}/deleteUser`, {
+  const response = await axios.delete(`${API_BASE_URL}/deleteUser`, {
     params: {
       username
     }
