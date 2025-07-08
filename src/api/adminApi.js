@@ -41,30 +41,25 @@ export const getAllUserInfo = async () => {
 };
 
 //更新商品信息
-export const updateGoodsInfo = async (dish_id, dish_name, dish_scale, path, price, mon_sale, describe) => { //成功返回700
-  const response = await axios.post(`${API_BASE_URL}/updateGoodsInfo`, {
-    params: {
-      dish_id,
-      dish_name,
-      dish_scale,
-      path,
-      price,
-      mon_sale,
-      describe
-    }
-  },
-    {
+// 更新商品信息
+export const updateGoodsInfo = async (goods) => { // 成功返回700
+  try {
+    const response = await axios.post(`${API_BASE_URL}/updateGoodsInfo`, goods, {
       headers: {
         'Content-Type': 'application/json'
       }
     });
-  console.log(response.data)
-  return response.data
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error('更新商品信息失败:', error);
+    return { code: -1, message: '请求失败' };
+  }
 };
 
 //删除商品信息
 export const deleteGoods = async (dish_id) => { //成功返回800
-  const response = await axios.get(`${API_BASE_URL}/deleteGoods`, {
+  const response = await axios.delete(`${API_BASE_URL}/deleteGoods`, {
     params: {
       dish_id
     }

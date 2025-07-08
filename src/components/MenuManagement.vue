@@ -55,8 +55,8 @@
         <tbody>
           <tr v-for="(dish, index) in dishes" :key="index">
             <td>{{ index + 1 }}</td>
-            <td><img :src="dish.image" alt="dish.name" class="dish-image" /></td>
-            <td>{{ dish.name }}</td>
+            <td><img :src="dish.path" :alt="dish.dish_name" class="dish-image" /></td>
+            <td>{{ dish.dish_name }}</td>
             <td>{{ dish.price }} 元</td>
             <td>{{ dish.monthlySales }} 单</td>
             <td class="action-cell">
@@ -110,27 +110,34 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, toRefs } from 'vue';
+import { defineComponent, reactive, ref, toRefs,onMounted } from 'vue';
+import { getGoodsInfo } from '../api/goodsApi.js'; // 引入 goodsapi
+import { updateGoodsInfo,deleteGoods } from '../api/adminApi.js';
 
 export default defineComponent({
   setup() {
-    // 模拟菜品数据
-    const dishes = reactive([
-      {
-        name: '排骨焖饭',
-        image: '/排骨焖饭.jpg',
-        price: 20,
-        monthlySales: 80,
-        description: '排骨软烂入味，米饭吸收排骨香气'
-      },
-      {
-        name: '冷泡汁小龙虾',
-        image: '/冷泡汁小龙虾.jpg',
-        price: 35,
-        monthlySales: 120,
-        description: '独特冷泡汁，小龙虾鲜嫩爽口'
+    // 使用 reactive 创建响应式数组
+    const dishes = reactive([]);
+
+    // 从数据库获取菜品数据
+    const fetchDishes = async () => {
+      try {
+        const response = await getGoodsInfo();
+        if (response.code === 400) { // 假设后端返回的 code 400 表示成功
+          // 清空现有数据并填充新数据
+          dishes.splice(0, dishes.length, ...response.data);
+        } else {
+          console.error('获取菜品数据失败:', response.message);
+        }
+      } catch (error) {
+        console.error('获取菜品数据失败:', error);
       }
-    ]);
+    };
+
+    // 在组件挂载时获取数据
+    onMounted(() => {
+      fetchDishes();
+    });
 
     // 新增菜品表单数据
     const newDish = reactive({
@@ -165,38 +172,91 @@ export default defineComponent({
 
     // 编辑菜品
     const editDish = (index: number) => {
-      editingIndex.value = index;
-      const dish = dishes[index];
-      // 复制数据到编辑表单
-      editedDish.name = dish.name;
-      editedDish.image = dish.image;
-      editedDish.price = dish.price;
-      editedDish.monthlySales = dish.monthlySales;
-      editedDish.description = dish.description;
-    };
+  editingIndex.value = index;
+  const dish = dishes[index];
+  
+  // 复制数据到编辑表单
+  editedDish.name = dish.dish_name;
+  editedDish.image = dish.path; // 注意这里应该是 path 字段
+  editedDish.price = dish.price;
+  editedDish.monthlySales = dish.monthlySales;
+  editedDish.description = dish.description;
+};
 
     // 保存编辑
-    const saveEdit = () => {
-      if (!editedDish.name || !editedDish.price) return;
-      const index = editingIndex.value;
-      if (index !== -1) {
-        dishes[index] = {...editedDish};
+    const saveEdit = async () => {
+  if (!editedDish.name || !editedDish.price) return;
+  
+  try {
+    const index = editingIndex.value;
+    if (index !== -1) {
+      const dish = dishes[index];
+      
+      // 构造 Goods 对象
+      const goods = {
+        dish_id: dish.dish_id,
+        dish_name: editedDish.name,
+        dish_scale: '', // 如果没有可以传空字符串
+        path: editedDish.image,
+        price: editedDish.price,
+        mon_sale: editedDish.monthlySales,
+        describe: editedDish.description
+      };
+      
+      // 调用 API 更新数据库
+      const response = await updateGoodsInfo(goods);
+      
+      if (response.code === 700) { // 假设这是成功码
+        // 更新本地数据
+        dishes[index] = {
+          ...dishes[index],
+          dish_name: editedDish.name,
+          path: editedDish.image,
+          price: editedDish.price,
+          monthlySales: editedDish.monthlySales,
+          description: editedDish.description
+        };
         cancelEdit();
+        alert('菜品信息更新成功！');
+      } else {
+        alert('更新失败：' + response.message);
       }
-    };
-
+    }
+  } catch (error) {
+    console.error('更新菜品信息失败:', error);
+    alert('更新菜品信息失败，请稍后再试');
+  }
+};
     // 取消编辑
     const cancelEdit = () => {
       editingIndex.value = -1;
     };
 
     // 删除菜品
-    const deleteDish = (index: number) => {
-      if (confirm(`确定要删除 ${dishes[index].name} 吗？`)) {
-        dishes.splice(index, 1);
-      }
-    };
+    const deleteDish = async (index: number) => {
+  const dish = dishes[index];
+  if (!dish || !dish.dish_id) {
+    alert('无法删除：菜品信息不完整');
+    return;
+  }
 
+  const confirmed = confirm(`确定要删除菜品【${dish.dish_name}】吗？`);
+  if (!confirmed) return;
+
+  try {
+    const response = await deleteGoods(dish.dish_id);
+    if (response.code === 800) {
+      // 成功删除后，移除本地数据
+      dishes.splice(index, 1);
+      alert('删除成功！');
+    } else {
+      alert('删除失败：' + response.message);
+    }
+  } catch (error) {
+    console.error('删除菜品失败:', error);
+    alert('删除失败，请稍后再试');
+  }
+};
     return {
       dishes,
       newDish,
