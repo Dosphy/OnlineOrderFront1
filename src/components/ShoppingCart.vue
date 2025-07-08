@@ -34,16 +34,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, onMounted } from 'vue';
 import { useCartStore } from '../stores/cart'; 
-import { ElMessage,ElMessageBox } from 'element-plus';
+import { carouselItemProps, ElMessage,ElMessageBox } from 'element-plus';
 import type { Action } from 'element-plus'
+import { sendOreder } from '../api/userApi.js';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   setup() {
     // 从状态管理获取购物车数据
     const cartStore = useCartStore();
-    
+    const router = useRouter();
     // 计算总金额
     const totalAmount = computed(() => {
       return cartStore.cartItems.reduce((total, item) => {
@@ -67,12 +69,36 @@ export default defineComponent({
     };
 
     // 结算
-    const checkout = () => {
-      ElMessage({
-        message: '订单提交成功！总金额：'+totalAmount.value+'元',
-        type: 'success',
-      });
-    };
+   const checkout = async () => {
+  if (cartStore.cartItems.length === 0) {
+    ElMessage.error('购物车为空，无法结算！');
+    return;
+  }
+ const username = localStorage.getItem("username");
+  // 构造符合后端期望的订单数据
+  const orderData = {
+    dishName: cartStore.cartItems[0].dish_name, // 假设只发送第一个菜品的名称
+    totalPrice: totalAmount.value, // 总金额
+    number: cartStore.cartItems[0].count, // 假设只发送第一个菜品的数量
+    username: username, // 假设用户名为testUser
+    orderTime: new Date().toISOString(), // 当前时间，转换为 ISO 8601 格式
+    status: 0 // 假设订单状态为0
+  };
+
+  console.log("前端构造的订单数据：", orderData); // 打印订单数据
+
+
+   
+    const response = await sendOreder(orderData);
+    if (response.code === 1300) { // 假设后端返回的代码 300 表示成功
+      ElMessage.success('订单提交成功！总金额：' + totalAmount.value + '元');
+      cartStore.clearCart(); // 清空购物车
+      window.location.reload();
+
+    } else {
+      ElMessage.error(response.message || '订单提交失败！');
+    }
+};
 
     return {
       cartItems: cartStore.cartItems,
