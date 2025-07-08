@@ -80,7 +80,7 @@ export const getHistoryOrder = async (username) => {
     return response.data; // 返回后端响应的数据
   } catch (error) {
     console.error('获取历史订单失败:', error);
-    return { code: 1001, message: '获取历史订单失败' }; // 假设 1001 是获取失败的代码
+    return { code: 1001, message: '获取历史订单失败' }; 
   }
 };
 
@@ -98,13 +98,13 @@ export const reduceStock = async (number) => { //成功返回1500
 // 购物车结算
 export const sendOreder = async (orderData) => {
   try {
-    console.log("发送到后端的订单数据：", orderData); // 打印发送的数据
+    console.log("发送到后端的订单数据：", orderData); 
     const response = await axios.post(`${API_BASE_URL}/sendOrder`, orderData, {
       headers: {
         'Content-Type': 'application/json'
       }
     });
-    console.log("后端返回的数据：", response.data); // 打印返回的数据
+    console.log("后端返回的数据：", response.data); 
     return response.data;
   } catch (error) {
     console.error("请求失败：", error); // 打印错误信息
