@@ -83,3 +83,14 @@ export const getHistoryOrder = async (username) => {
     return { code: 1001, message: '获取历史订单失败' }; // 假设 1001 是获取失败的代码
   }
 };
+
+//根据人数处理库存
+export const reduceStock = async (number) => { //成功返回300
+  const response = await axios.post(`${API_BASE_URL}/reduceStock?number=${number}`, {}, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  console.log(response.data)
+  return response.data;
+};
