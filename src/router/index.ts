@@ -14,6 +14,7 @@ import MenuManagement from '../components/MenuManagement.vue';
 import ShoppingCart from '@/components/ShoppingCart.vue';
 import Adminlogin from '@/components/adminlogin.vue';
 import adminprim from '@/components/adminprim.vue';
+import Payment from '@/components/payment.vue';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -27,6 +28,10 @@ const routes: RouteRecordRaw[] = [
     path:'/adminLogin',
     name:'AdminLogin',
     component:Adminlogin,
+  },
+  {
+    path: '/payment',
+    component: Payment,
   },
   {
     path: '/user',

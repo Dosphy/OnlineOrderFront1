@@ -120,12 +120,12 @@ export const deleteUser = async (username) => { //成功返回1100
 };
 
 //处理用户订单
-export const dealUserOrder = async (orderId) => { //成功返回1800
+export const dealUserOrder = async (order_id) => { //成功返回1800
   const response = await axios.post(`${API_BASE_URL}/dealUserOrder`, {
-    orderId
+    order_id
   }, {
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': 'application/json'
     }
   });
   console.log(response.data)

@@ -116,7 +116,11 @@ export default defineComponent({
 
         ElMessage.success(`成功提交 ${mergedItems.length} 个订单！`);
         cartStore.clearCart();
-        window.location.reload()
+        // 3秒后显示即将跳转支付页面
+        setTimeout(() => {
+          ElMessage.info('即将跳转支付页面...');
+          router.push('/payment'); // 跳转到支付页面
+        }, 3000);
       } catch (error) {
         ElMessage.error("提交失败!");
       }
