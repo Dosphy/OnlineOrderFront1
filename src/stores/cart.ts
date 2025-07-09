@@ -7,9 +7,8 @@ interface Dish {
   path: string;
   price: number;
   mon_sale: number;
-  discribe: string;
+  description: string;
   count: number;
-  //selectedSpec: string;
 }
 
 export const useCartStore = defineStore('cart', {

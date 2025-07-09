@@ -41,7 +41,6 @@ export const getAllUserInfo = async () => {
 };
 
 //更新商品信息
-// 更新商品信息
 export const updateGoodsInfo = async (goods) => { // 成功返回700
   try {
     const response = await axios.post(`${API_BASE_URL}/updateGoodsInfo`, goods, {

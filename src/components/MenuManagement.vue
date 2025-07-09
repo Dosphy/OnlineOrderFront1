@@ -1,7 +1,7 @@
 <template>
   <div class="menu-management">
     <h2>菜单管理</h2>
-    
+
     <!-- 新增菜品表单（表格布局） -->
     <div class="panel add-dish-form">
       <h3>新增菜品</h3>
@@ -18,7 +18,8 @@
             </tr>
             <tr>
               <td class="label-cell"><label>价格</label></td>
-              <td class="input-cell"><input v-model.number="newDish.price" type="number" min="0" step="0.01" required /></td>
+              <td class="input-cell"><input v-model.number="newDish.price" type="number" min="0" step="0.01" required />
+              </td>
             </tr>
             <tr>
               <td class="label-cell"><label>月销量</label></td>
@@ -37,7 +38,7 @@
         </table>
       </form>
     </div>
-    
+
     <!-- 菜品列表（保持表格，优化样式统一） -->
     <div class="panel dish-list">
       <h3>菜品列表</h3>
@@ -45,9 +46,9 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>图片</th>
-            <th>名称</th>
-            <th>价格</th>
+            <th>菜品图片</th>
+            <th>菜品名称</th>
+            <th>菜品单价</th>
             <th>月销量</th>
             <th>操作</th>
           </tr>
@@ -67,7 +68,7 @@
         </tbody>
       </table>
     </div>
-    
+
     <!-- 编辑弹窗（同样表格布局） -->
     <div v-if="editingIndex !== -1" class="edit-modal">
       <div class="modal-content">
@@ -85,11 +86,13 @@
               </tr>
               <tr>
                 <td class="label-cell"><label>价格</label></td>
-                <td class="input-cell"><input v-model.number="editedDish.price" type="number" min="0" step="0.01" required /></td>
+                <td class="input-cell"><input v-model.number="editedDish.price" type="number" min="0" step="0.01"
+                    required /></td>
               </tr>
               <tr>
                 <td class="label-cell"><label>月销量</label></td>
-                <td class="input-cell"><input v-model.number="editedDish.monthlySales" type="number" min="0" required /></td>
+                <td class="input-cell"><input v-model.number="editedDish.monthlySales" type="number" min="0" required />
+                </td>
               </tr>
               <tr>
                 <td class="label-cell"><label>描述</label></td>
@@ -110,9 +113,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, toRefs,onMounted } from 'vue';
+import { defineComponent, reactive, ref, toRefs, onMounted } from 'vue';
 import { getGoodsInfo } from '../api/goodsApi.js'; // 引入 goodsapi
-import { updateGoodsInfo,deleteGoods } from '../api/adminApi.js';
+import { updateGoodsInfo, deleteGoods } from '../api/adminApi.js';
+import { ElMessage } from 'element-plus'
 
 export default defineComponent({
   setup() {
@@ -161,7 +165,7 @@ export default defineComponent({
     // 添加菜品
     const addDish = () => {
       if (!newDish.name || !newDish.price) return;
-      dishes.push({...newDish});
+      dishes.push({ ...newDish });
       // 重置表单
       newDish.name = '';
       newDish.image = '';
@@ -172,61 +176,59 @@ export default defineComponent({
 
     // 编辑菜品
     const editDish = (index: number) => {
-  editingIndex.value = index;
-  const dish = dishes[index];
-  
-  // 复制数据到编辑表单
-  editedDish.name = dish.dish_name;
-  editedDish.image = dish.path; // 注意这里应该是 path 字段
-  editedDish.price = dish.price;
-  editedDish.monthlySales = dish.monthlySales;
-  editedDish.description = dish.description;
-};
+      editingIndex.value = index;
+      const dish = dishes[index];
+
+      // 复制数据到编辑表单
+      editedDish.name = dish.dish_name;
+      editedDish.image = dish.path; 
+      editedDish.price = dish.price;
+      editedDish.monthlySales = dish.monthlySales;
+      editedDish.description = dish.description;
+    };
 
     // 保存编辑
     const saveEdit = async () => {
-  if (!editedDish.name || !editedDish.price) return;
-  
-  try {
-    const index = editingIndex.value;
-    if (index !== -1) {
-      const dish = dishes[index];
-      
-      // 构造 Goods 对象
-      const goods = {
-        dish_id: dish.dish_id,
-        dish_name: editedDish.name,
-        dish_scale: '', // 如果没有可以传空字符串
-        path: editedDish.image,
-        price: editedDish.price,
-        mon_sale: editedDish.monthlySales,
-        describe: editedDish.description
-      };
-      
-      // 调用 API 更新数据库
-      const response = await updateGoodsInfo(goods);
-      
-      if (response.code === 700) { // 假设这是成功码
-        // 更新本地数据
-        dishes[index] = {
-          ...dishes[index],
-          dish_name: editedDish.name,
-          path: editedDish.image,
-          price: editedDish.price,
-          monthlySales: editedDish.monthlySales,
-          description: editedDish.description
-        };
-        cancelEdit();
-        alert('菜品信息更新成功！');
-      } else {
-        alert('更新失败：' + response.message);
+      if (!editedDish.name || !editedDish.price) return;
+
+      try {
+        const index = editingIndex.value;
+        if (index !== -1) {
+          const dish = dishes[index];
+
+          // 构造 Goods 对象
+          const goods = {
+            dish_id: dish.dish_id,
+            dish_name: editedDish.name,
+            path: editedDish.image,
+            price: editedDish.price,
+            mon_sale: editedDish.monthlySales,
+            describe: editedDish.description
+          };
+
+          // 调用 API 更新数据库
+          const response = await updateGoodsInfo(goods);
+
+          if (response.code === 700) { 
+            // 更新本地数据
+            dishes[index] = {
+              ...dishes[index],
+              dish_name: editedDish.name,
+              path: editedDish.image,
+              price: editedDish.price,
+              monthlySales: editedDish.monthlySales,
+              description: editedDish.description
+            };
+            cancelEdit();
+            ElMessage.success("修改成功!");
+          } else {
+            ElMessage.error(response.message);
+          }
+        }
+      } catch (error) {
+        ElMessage.error("修改失败!");
       }
-    }
-  } catch (error) {
-    console.error('更新菜品信息失败:', error);
-    alert('更新菜品信息失败，请稍后再试');
-  }
-};
+    };
     // 取消编辑
     const cancelEdit = () => {
       editingIndex.value = -1;
@@ -234,29 +236,28 @@ export default defineComponent({
 
     // 删除菜品
     const deleteDish = async (index: number) => {
-  const dish = dishes[index];
-  if (!dish || !dish.dish_id) {
-    alert('无法删除：菜品信息不完整');
-    return;
-  }
+      const dish = dishes[index];
+      if (!dish || !dish.dish_id) {
+        ElMessage.error("无法删除：菜品信息不完整");
+        return;
+      }
 
-  const confirmed = confirm(`确定要删除菜品【${dish.dish_name}】吗？`);
-  if (!confirmed) return;
+      const confirmed = confirm(`确定要删除菜品【${dish.dish_name}】吗？`);
+      if (!confirmed) return;
 
-  try {
-    const response = await deleteGoods(dish.dish_id);
-    if (response.code === 800) {
-      // 成功删除后，移除本地数据
-      dishes.splice(index, 1);
-      alert('删除成功！');
-    } else {
-      alert('删除失败：' + response.message);
-    }
-  } catch (error) {
-    console.error('删除菜品失败:', error);
-    alert('删除失败，请稍后再试');
-  }
-};
+      try {
+        const response = await deleteGoods(dish.dish_id);
+        if (response.code === 800) {
+          // 成功删除后，移除本地数据
+          dishes.splice(index, 1);
+          ElMessage.success("删除成功!");
+        } else {
+          ElMessage.error(response.message);
+        }
+      } catch (error) {
+        ElMessage.error("删除失败!");
+      }
+    };
     return {
       dishes,
       newDish,
@@ -299,20 +300,25 @@ export default defineComponent({
 }
 
 /* 表单表格 & 数据表格 通用布局 */
-.form-table, .data-table {
+.form-table,
+.data-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.form-table tr, .data-table tr {
+.form-table tr,
+.data-table tr {
   border-bottom: 1px solid #f2f2f2;
 }
 
-.form-table tr:last-child, .data-table tr:last-child {
+.form-table tr:last-child,
+.data-table tr:last-child {
   border-bottom: none;
 }
 
-.form-table td, .data-table th, .data-table td {
+.form-table td,
+.data-table th,
+.data-table td {
   padding: 12px 8px;
   vertical-align: middle;
 }
@@ -446,4 +452,4 @@ button:disabled {
 .close-button:hover {
   color: #333;
 }
-</style>  
+</style>

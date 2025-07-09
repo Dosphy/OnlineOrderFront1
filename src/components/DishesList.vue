@@ -6,7 +6,7 @@
         <div class="dish-name">{{ dish.dish_name }}</div>
         <div class="dish-price">价格：{{ dish.price }}元</div>
         <div class="dish-monthly-sales">月销量：{{ dish.mon_sale }}单</div>
-        <div class="dish-description">描述：{{ dish.discribe }}</div>
+        <div class="dish-description">描述：{{ dish.description }}</div>
         <div class="dish-count">
           数量：{{ dish.count }}
           <button @click="incrementCount(dish)">+</button>
@@ -30,7 +30,7 @@ interface Dish {
   path: string;
   price: number;
   mon_sale: number;
-  discribe: string;
+  description: string;
   count: number;
 }
 
@@ -43,7 +43,6 @@ export default defineComponent({
     const getDishes = async () => {
       const response = await getGoodsInfo();
       if (response.code === 400) {
-        // 初始化菜品数据，添加count和selectedSpec字段
         response.data.forEach((dish: any) => {
           dishes.push({
             ...dish,
