@@ -50,6 +50,7 @@
             <th>菜品名称</th>
             <th>菜品单价</th>
             <th>月销量</th>
+            <th>描述</th>
             <th>操作</th>
           </tr>
         </thead>
@@ -59,10 +60,12 @@
             <td><img :src="dish.path" :alt="dish.dish_name" class="dish-image" /></td>
             <td>{{ dish.dish_name }}</td>
             <td>{{ dish.price }} 元</td>
-            <td>{{ dish.monthlySales }} 单</td>
+            <td>{{ dish.mon_sale }} 单</td>
+            <!-- 更新描述列的数据绑定 -->
+            <td>{{ dish.description }}</td>
             <td class="action-cell">
               <button @click="editDish(index)">编辑</button>
-              <button @click="deleteDish(index)">删除</button>
+              <button @click="deleteDish(index)" style="margin-left: 8px;">删除</button>
             </td>
           </tr>
         </tbody>
@@ -116,7 +119,7 @@
 import { defineComponent, reactive, ref, toRefs, onMounted } from 'vue';
 import { getGoodsInfo } from '../api/goodsApi.js'; // 引入 goodsapi
 import { updateGoodsInfo, deleteGoods } from '../api/adminApi.js';
-import { ElMessage } from 'element-plus'
+import { ElMessage } from 'element-plus';
 
 export default defineComponent({
   setup() {
@@ -181,9 +184,9 @@ export default defineComponent({
 
       // 复制数据到编辑表单
       editedDish.name = dish.dish_name;
-      editedDish.image = dish.path; 
+      editedDish.image = dish.path;
       editedDish.price = dish.price;
-      editedDish.monthlySales = dish.monthlySales;
+      editedDish.monthlySales = dish.mon_sale;
       editedDish.description = dish.description;
     };
 
@@ -203,20 +206,20 @@ export default defineComponent({
             path: editedDish.image,
             price: editedDish.price,
             mon_sale: editedDish.monthlySales,
-            describe: editedDish.description
+            description: editedDish.description
           };
 
           // 调用 API 更新数据库
           const response = await updateGoodsInfo(goods);
 
-          if (response.code === 700) { 
+          if (response.code === 700) {
             // 更新本地数据
             dishes[index] = {
               ...dishes[index],
               dish_name: editedDish.name,
               path: editedDish.image,
               price: editedDish.price,
-              monthlySales: editedDish.monthlySales,
+              mon_sale: editedDish.monthlySales,
               description: editedDish.description
             };
             cancelEdit();
@@ -451,5 +454,16 @@ button:disabled {
 
 .close-button:hover {
   color: #333;
+}
+
+/* 关键修改：让列名和内容对齐 */
+.data-table th:first-child,
+.data-table td:first-child {
+  text-align: center;
+}
+
+.data-table th:not(:first-child),
+.data-table td:not(:first-child) {
+  text-align: left;
 }
 </style>

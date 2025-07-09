@@ -2,7 +2,7 @@
   <div class="order-processing">
     <!-- 标题 -->
     <h2>订单处理</h2>
-    
+
     <!-- 筛选 + 刷新区域 -->
     <div class="order-filter">
       <select v-model="filterStatus">
@@ -12,7 +12,7 @@
       </select>
       <button class="refresh-btn" @click="refreshOrders">刷新</button>
     </div>
-    
+
     <!-- 订单表格 -->
     <div class="table-container">
       <table class="order-table">
@@ -21,23 +21,22 @@
             <th>订单号</th>
             <th>用户</th>
             <th>菜品</th>
+            <th>总价格</th>
+            <th>下单时间</th>
             <th>状态</th>
             <th>操作</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="order in filteredOrders" :key="order.id">
+          <tr v-for="order in orders" :key="order.id">
             <td>{{ order.id }}</td>
             <td>{{ order.username }}</td>
             <td>{{ order.foodName }}</td>
+            <td>{{ order.totalPrice }}</td>
+            <td>{{ formatDate(order.orderTime) }}</td>
             <td>{{ order.status === 0 ? '处理中' : '已完成' }}</td>
             <td>
-              <!-- 仅处理中状态显示“完成”按钮 -->
-              <button 
-                class="action-btn complete-btn" 
-                @click="completeOrder(order)" 
-                v-if="order.status === 0"
-              >
+              <button class="action-btn complete-btn" @click="completeOrder(order)" v-if="order.status === 0">
                 完成
               </button>
             </td>
@@ -50,13 +49,17 @@
 
 <script lang="ts">
 import { defineComponent, reactive, computed, ref, onMounted } from 'vue';
+import { dealUserOrder } from '../api/adminApi.js'
+import { ElMessage } from 'element-plus'
 import axios from 'axios';
 
 interface Order {
   id: number;
   username: string;
   foodName: string;
-  status: number; // 使用数字表示状态，0: 处理中, 1: 已完成
+  status: number;
+  totalPrice: number;
+  orderTime: Date;
 }
 
 export default defineComponent({
@@ -77,7 +80,9 @@ export default defineComponent({
               id: item.orderId,
               username: item.username,
               foodName: item.dishName,
-              status: item.status
+              status: item.status,
+              totalPrice: item.totalPrice,
+              orderTime: new Date(item.orderTime)
             });
           });
         }
@@ -86,25 +91,15 @@ export default defineComponent({
       }
     };
 
-    // 动态过滤订单
-    const filteredOrders = computed(() => {
-      if (filterStatus.value === 'all') {
-        return orders;
-      }
-      return orders.filter(order => order.status === parseInt(filterStatus.value));
-    });
-
     // 完成订单（处理中 → 已完成）
     const completeOrder = async (order: Order) => {
-      try {
-        const response = await axios.post('http://localhost:8080/adminControl/dealUserOrder', {
-          order_id: order.id
-        });
-        if (response.data.code === 1800) { // 假设1800是完成订单成功的状态码
-          order.status = 1;
-        }
-      } catch (error) {
-        console.error('Error completing order:', error);
+      console.log(order.id)
+      const response = await dealUserOrder(order.id)
+      if (response.code === 1800) {
+        order.status = 1;
+        ElMessage.success('处理成功!');
+      } else {
+        ElMessage.error('处理失败!');
       }
     };
 
@@ -113,16 +108,22 @@ export default defineComponent({
       fetchOrders();
     };
 
+    // 格式化日期时间
+    const formatDate = (date: Date): string => {
+      return date.toLocaleString();
+    };
+
     // 生命周期钩子：组件挂载后获取订单数据
     onMounted(() => {
       fetchOrders();
     });
 
     return {
+      orders,
       filterStatus,
-      filteredOrders,
       completeOrder,
-      refreshOrders
+      refreshOrders,
+      formatDate
     };
   }
 });
@@ -185,8 +186,9 @@ h2 {
 /* 订单表格 */
 .order-table {
   width: 100%;
-  min-width: 600px;
-  border-collapse: separate; /* 分离边框，配合圆角 */
+  min-width: 800px;
+  border-collapse: separate;
+  /* 分离边框，配合圆角 */
   border-spacing: 0;
   border-radius: 8px;
   overflow: hidden;
@@ -234,7 +236,8 @@ h2 {
 }
 
 .complete-btn {
-  background-color: #67c23a; /* 绿色 */
+  background-color: #67c23a;
+  /* 绿色 */
   color: #fff;
 }
 

@@ -2,20 +2,21 @@ import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:8080/adminControl';
 const API_USER_URL = 'http://localhost:8080/userControl';
+const API_GOODS_URL = 'http://localhost:8080/goodsControl';
 
 //管理员登录
 export const adminLogin = async (username, password) => { //成功返回500
   const response = await axios.get(`${API_BASE_URL}/adminLogin`, {
-    params: {  
+    params: {
       username,
       password
     }
   },
-  {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  });
+    {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
   console.log(response.data)
   return response.data
 };
@@ -101,4 +102,18 @@ export const deleteUser = async (username) => { //成功返回1100
   console.log(response.data)
   return response.data;
 };
+
+//处理用户订单
+export const dealUserOrder = async (orderId) => { //成功返回1800
+  const response = await axios.post(`${API_BASE_URL}/dealUserOrder`, {
+    orderId
+  }, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  });
+  console.log(response.data)
+  return response.data;
+};
+
 
