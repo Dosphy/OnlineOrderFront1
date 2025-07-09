@@ -2,7 +2,7 @@
   <div class="order-processing">
     <!-- 标题 -->
     <h2>订单处理</h2>
-
+    
     <!-- 筛选 + 刷新区域 -->
     <div class="order-filter">
       <select v-model="filterStatus">
@@ -12,7 +12,7 @@
       </select>
       <button class="refresh-btn" @click="refreshOrders">刷新</button>
     </div>
-
+    
     <!-- 订单表格 -->
     <div class="table-container">
       <table class="order-table">
@@ -28,7 +28,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="order in orders" :key="order.id">
+          <tr v-for="order in filteredOrders" :key="order.id">
             <td>{{ order.id }}</td>
             <td>{{ order.username }}</td>
             <td>{{ order.foodName }}</td>
@@ -36,7 +36,11 @@
             <td>{{ formatDate(order.orderTime) }}</td>
             <td>{{ order.status === 0 ? '处理中' : '已完成' }}</td>
             <td>
-              <button class="action-btn complete-btn" @click="completeOrder(order)" v-if="order.status === 0">
+              <button 
+                class="action-btn complete-btn" 
+                @click="completeOrder(order)" 
+                v-if="order.status === 0"
+              >
                 完成
               </button>
             </td>
@@ -49,8 +53,8 @@
 
 <script lang="ts">
 import { defineComponent, reactive, computed, ref, onMounted } from 'vue';
-import { dealUserOrder } from '../api/adminApi.js'
-import { ElMessage } from 'element-plus'
+import { dealUserOrder } from '../api/adminApi.js';
+import { ElMessage } from 'element-plus';
 import axios from 'axios';
 
 interface Order {
@@ -91,6 +95,14 @@ export default defineComponent({
       }
     };
 
+    // 动态过滤订单
+    const filteredOrders = computed(() => {
+      if (filterStatus.value === 'all') {
+        return orders;
+      }
+      return orders.filter(order => order.status === parseInt(filterStatus.value));
+    });
+
     // 完成订单（处理中 → 已完成）
     const completeOrder = async (order: Order) => {
       console.log(order.id)
@@ -121,6 +133,7 @@ export default defineComponent({
     return {
       orders,
       filterStatus,
+      filteredOrders,
       completeOrder,
       refreshOrders,
       formatDate
