@@ -72,6 +72,22 @@ export const deleteGoods = async (dish_id) => { //成功返回800
   return response.data
 };
 
+//添加商品信息
+export const addDishes = async (goods) => { // 成功返回1200
+  try {
+    const response = await axios.post(`${API_GOODS_URL}/addDishes`, goods, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error('更新商品信息失败:', error);
+    return { code: -1, message: '请求失败' };
+  }
+};
+
 //更新用户信息
 export const updateUserInfo = async (username, password, email, phone) => { //成功返回300
   const response = await axios.post(`${API_USER_URL}/updateUserInfo`, {
@@ -115,5 +131,4 @@ export const dealUserOrder = async (orderId) => { //成功返回1800
   console.log(response.data)
   return response.data;
 };
-
 

@@ -118,8 +118,8 @@
 <script lang="ts">
 import { defineComponent, reactive, ref, toRefs, onMounted } from 'vue';
 import { getGoodsInfo } from '../api/goodsApi.js'; // 引入 goodsapi
-import { updateGoodsInfo, deleteGoods } from '../api/adminApi.js';
-import { ElMessage } from 'element-plus';
+import { updateGoodsInfo, deleteGoods, addDishes } from '../api/adminApi.js';
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 export default defineComponent({
   setup() {
@@ -166,21 +166,45 @@ export default defineComponent({
     });
 
     // 添加菜品
-    const addDish = () => {
-      if (!newDish.name || !newDish.price) return;
-      dishes.push({ ...newDish });
-      // 重置表单
-      newDish.name = '';
-      newDish.image = '';
-      newDish.price = 0;
-      newDish.monthlySales = 0;
-      newDish.description = '';
-    };
+    const addDish = async () => {
+      if (!newDish.name) {
+        ElMessage.warning('请输入菜品名称');
+        return;
+      }
+      if (!newDish.price || newDish.price <= 0) {
+        ElMessage.warning('请输入有效的价格');
+        return;
+      }
 
-    // 编辑菜品
-    const editDish = (index: number) => {
-      editingIndex.value = index;
-      const dish = dishes[index];
+      const goods = {
+        dish_name: newDish.name,
+        path: newDish.image,
+        price: newDish.price,
+        mon_sale: newDish.monthlySales,
+        describe: newDish.description
+      };
+
+      // 调用API
+      const response = await addDishes(goods);
+
+      if (response.code === 1200) {
+        ElMessage.success('添加菜品成功!');
+        dishes.push({ ...newDish });
+        // 重置表单
+        newDish.name = '';
+        newDish.image = '';
+        newDish.price = 0;
+        newDish.monthlySales = 0;
+        newDish.description = '';
+      } else{
+        ElMessage.error('添加菜品失败!');
+      }
+      await fetchDishes();
+    }
+      // 编辑菜品
+      const editDish = (index: number) => {
+        editingIndex.value = index;
+        const dish = dishes[index];
 
       // 复制数据到编辑表单
       editedDish.name = dish.dish_name;
@@ -190,14 +214,14 @@ export default defineComponent({
       editedDish.description = dish.description;
     };
 
-    // 保存编辑
-    const saveEdit = async () => {
-      if (!editedDish.name || !editedDish.price) return;
+      // 保存编辑
+      const saveEdit = async () => {
+        if (!editedDish.name || !editedDish.price) return;
 
-      try {
-        const index = editingIndex.value;
-        if (index !== -1) {
-          const dish = dishes[index];
+        try {
+          const index = editingIndex.value;
+          if (index !== -1) {
+            const dish = dishes[index];
 
           // 构造 Goods 对象
           const goods = {
@@ -209,8 +233,8 @@ export default defineComponent({
             description: editedDish.description
           };
 
-          // 调用 API 更新数据库
-          const response = await updateGoodsInfo(goods);
+            // 调用 API 更新数据库
+            const response = await updateGoodsInfo(goods);
 
           if (response.code === 700) {
             // 更新本地数据
@@ -237,43 +261,50 @@ export default defineComponent({
       editingIndex.value = -1;
     };
 
-    // 删除菜品
-    const deleteDish = async (index: number) => {
-      const dish = dishes[index];
-      if (!dish || !dish.dish_id) {
-        ElMessage.error("无法删除：菜品信息不完整");
-        return;
-      }
-
-      const confirmed = confirm(`确定要删除菜品【${dish.dish_name}】吗？`);
-      if (!confirmed) return;
-
-      try {
-        const response = await deleteGoods(dish.dish_id);
-        if (response.code === 800) {
-          // 成功删除后，移除本地数据
-          dishes.splice(index, 1);
-          ElMessage.success("删除成功!");
-        } else {
-          ElMessage.error(response.message);
+      // 删除菜品
+      const deleteDish = async (index: number) => {
+        const dish = dishes[index];
+        if (!dish || !dish.dish_id) {
+          ElMessage.error("无法删除：菜品信息不完整");
+          return;
         }
-      } catch (error) {
-        ElMessage.error("删除失败!");
-      }
-    };
-    return {
-      dishes,
-      newDish,
-      editingIndex,
-      editedDish,
-      addDish,
-      editDish,
-      saveEdit,
-      cancelEdit,
-      deleteDish
-    };
-  }
-});
+
+        try {
+          await ElMessageBox.confirm(
+            `确定要删除菜品【${dish.dish_name}】吗？`,
+            '提示',
+            {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning',
+            }
+          )
+          // if (!confirmed) return;
+          const response = await deleteGoods(dish.dish_id);
+          if (response.code === 800) {
+            // 成功删除后，移除本地数据
+            dishes.splice(index, 1);
+            ElMessage.success("删除成功!");
+          } else {
+            ElMessage.error(response.message);
+          }
+        } catch (error) {
+          ElMessage.info("删除取消");
+        }
+      };
+      return {
+        dishes,
+        newDish,
+        editingIndex,
+        editedDish,
+        addDish,
+        editDish,
+        saveEdit,
+        cancelEdit,
+        deleteDish
+      };
+    }
+  });
 </script>
 
 <style scoped>

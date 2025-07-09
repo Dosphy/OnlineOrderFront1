@@ -100,40 +100,6 @@ export default defineComponent({
           }
         );
 
-        // 3. 为每种商品创建独立订单
-        // const orderPromises = mergedItems.map(item => {
-        //   const orderData = {
-        //     dishName: item.dish_name,
-        //     totalPrice: item.price * item.count, // 单种商品总价
-        //     number: item.count,                 // 单种商品数量
-        //     username: username,
-        //     orderTime: null, // 自动生成时间可不传
-        //     status: 0
-        //   };
-        //   return sendOreder(orderData);
-        // });
-
-        // 4. 发送所有订单
-        //   const results = await Promise.all(orderPromises);
-        //   const allSuccess = results.every(res => res.code === 1300);
-
-        //   if (allSuccess) {
-        //     ElMessage.success(`成功提交 ${mergedItems.length} 个订单！`);
-        //     cartStore.clearCart();
-        //     window.location.reload()
-        //   } else {
-        //     const errorMessages = results
-        //       .filter(res => res.code !== 1300)
-        //       .map(res => res.message)
-        //       .join('; ');
-        //     ElMessage.error(`部分订单提交失败: ${errorMessages}`);
-        //   }
-        // } catch (error) {
-        //   if (error !== 'cancel') {
-        //     ElMessage.error('下单过程中出错: ' + (error.message || error));
-        //   }
-        // }
-        // 改为单个提交避免部分失败
         for (const item of mergedItems) {
           const response = await sendOreder({
             dishName: item.dish_name,
