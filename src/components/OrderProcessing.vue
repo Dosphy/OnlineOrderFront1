@@ -7,8 +7,8 @@
     <div class="order-filter">
       <select v-model="filterStatus">
         <option value="all">全部订单</option>
-        <option value="processing">处理中</option>
-        <option value="completed">已完成</option>
+        <option value="0">处理中</option>
+        <option value="1">已完成</option>
       </select>
       <button class="refresh-btn" @click="refreshOrders">刷新</button>
     </div>
@@ -30,13 +30,13 @@
             <td>{{ order.id }}</td>
             <td>{{ order.username }}</td>
             <td>{{ order.foodName }}</td>
-            <td>{{ order.status }}</td>
+            <td>{{ order.status === 0 ? '处理中' : '已完成' }}</td>
             <td>
               <!-- 仅处理中状态显示“完成”按钮 -->
               <button 
                 class="action-btn complete-btn" 
                 @click="completeOrder(order)" 
-                v-if="order.status === 'processing'"
+                v-if="order.status === 0"
               >
                 完成
               </button>
@@ -49,37 +49,74 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed, ref } from 'vue'; 
+import { defineComponent, reactive, computed, ref, onMounted } from 'vue';
+import axios from 'axios';
+
+interface Order {
+  id: number;
+  username: string;
+  foodName: string;
+  status: number; // 使用数字表示状态，0: 处理中, 1: 已完成
+}
 
 export default defineComponent({
   setup() {
-    // 订单数据：仅保留处理中、已完成状态
-    const orders = reactive([
-      { id: 'ORD002', username: '大大怪', foodName: '冷泡汁小龙虾', status: 'processing' },
-      { id: 'ORD003', username: '用户3', foodName: '排骨焖饭', status: 'completed' }
-    ]);
-
+    // 订单数据
+    const orders = reactive<Order[]>([]);
     // 筛选状态（全部/处理中/已完成）
-    const filterStatus = ref('all'); 
+    const filterStatus = ref('all');
+
+    // 获取订单数据
+    const fetchOrders = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/adminControl/getUserOrders');
+        if (response.data.code === 1700) { // 假设1700是获取订单成功的状态码
+          orders.splice(0); // 清空现有订单
+          response.data.data.forEach((item: any) => {
+            orders.push({
+              id: item.orderId,
+              username: item.username,
+              foodName: item.dishName,
+              status: item.status
+            });
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+      }
+    };
 
     // 动态过滤订单
     const filteredOrders = computed(() => {
       if (filterStatus.value === 'all') {
-        return orders; // 全部订单（仅处理中、已完成）
+        return orders;
       }
-      return orders.filter(order => order.status === filterStatus.value);
+      return orders.filter(order => order.status === parseInt(filterStatus.value));
     });
 
     // 完成订单（处理中 → 已完成）
-    const completeOrder = (order: any) => {
-      order.status = 'completed';
-      console.log('订单完成:', order);
+    const completeOrder = async (order: Order) => {
+      try {
+        const response = await axios.post('http://localhost:8080/adminControl/dealUserOrder', {
+          order_id: order.id
+        });
+        if (response.data.code === 1800) { // 假设1800是完成订单成功的状态码
+          order.status = 1;
+        }
+      } catch (error) {
+        console.error('Error completing order:', error);
+      }
     };
 
-    // 刷新订单（可扩展实际逻辑，如重新拉取数据）
+    // 刷新订单
     const refreshOrders = () => {
-      console.log('刷新订单列表');
+      fetchOrders();
     };
+
+    // 生命周期钩子：组件挂载后获取订单数据
+    onMounted(() => {
+      fetchOrders();
+    });
 
     return {
       filterStatus,
